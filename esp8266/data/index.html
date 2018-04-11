@@ -1,0 +1,3260 @@
+﻿<!--*
+*
+* Copyright (c) 2018 ERA Instruments (http://erainstruments.com/)
+
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>ERASynth Control Panel</title>
+    <meta name="theme-color" content="#000000">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAAjVBMVEXtHCTsHCPqGyAAAADlGRnmGhvsHCTnGhzpGyPrGyPuHCTlGSHwHSTpHCTtHCTtHCPsHCPsHCLsHCPrHCLrHCLsHCLtHCTtHCTsHCTsHCTtHCTtHCTtHCTsHCTsHCPtHCTtHCTtHCTtHCTtHCTtHCTtHCTsHCTsHCTsHCTpHCTpHCTmHCTsHCTsHCTtHCSuOxdeAAAALnRSTlMAAAAAAAAAAAAAAAAAAP2/ryGwHB0dtb0lJurruC8WPD0l9/uXnK+yawUDAqOY2jG4oAAAAXFJREFUeNrt2slOw0AUBdEODSbMxgFCmMI8w/9/HgEBIutelK6o2lu6x3rLLu/hFXqAAHqAAHqAAHqAAHqAAHqAAHqAAHpAW7t74YB+PxswTEo0YDgYrSQDhsNRrcGAflJWkwGf91ODAV/3EwxY3M9aMuD7fmIBP/eTCugn3Xoy4Oj3fjIB0+Ou1mDAdFbGyYDF/o36F3AS1enZbHOrLgHOs7rYHtdlQA1PAJ0AOgF0AugE0AmgE0AngE4AnQA6AXQC6ATQCaATQCeATgCdADoBdALoBNAJoMsHzNEur1r/YLlGu7ltBsAvyO4ECBAgQIAAAQIECBAgQIAAAQIECBAgQMB/BNyjPTx2rYAntuedVkDj93gC6ATQCaATQCeATgCdADoBdALoBNAJoBNAJ4BOAJ0AOgF0AugE0AmgE0AngE4AXXkJr7yGR7/Yak4AnQA6AXQC6ATQCaATQCeATgCdADoBdALoBNAJoBNAV97C+wDBra8Fi8maFwAAAABJRU5ErkJggg==" rel="icon" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="jquery-3.2.1.min.js"><\/script>')</script>
+
+    <!-- Bootstrap v4.0.0 (https://getbootstrap.com)  -->
+    <style type="text/css">
+        html {
+            font-family: sans-serif;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        hgroup,
+        main,
+        menu,
+        nav,
+        section,
+        summary {
+            display: block;
+        }
+
+        audio,
+        canvas,
+        progress,
+        video {
+            display: inline-block;
+            vertical-align: baseline;
+        }
+
+            audio:not([controls]) {
+                display: none;
+                height: 0;
+            }
+
+        [hidden],
+        template {
+            display: none;
+        }
+
+        a {
+            background-color: transparent;
+        }
+
+            a:active,
+            a:hover {
+                outline: 0;
+            }
+
+        abbr[title] {
+            border-bottom: 1px dotted;
+        }
+
+        b,
+        strong {
+            font-weight: bold;
+        }
+
+        dfn {
+            font-style: italic;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 0.67em 0;
+        }
+
+        mark {
+            background: #ff0;
+            color: #000;
+        }
+
+        small {
+            font-size: 80%;
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+
+        sup {
+            top: -0.5em;
+        }
+
+        sub {
+            bottom: -0.25em;
+        }
+
+        img {
+            border: 0;
+        }
+
+        svg:not(:root) {
+            overflow: hidden;
+        }
+
+        figure {
+            margin: 1em 40px;
+        }
+
+        hr {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            height: 0;
+        }
+
+        pre {
+            overflow: auto;
+        }
+
+        code,
+        kbd,
+        pre,
+        samp {
+            font-family: monospace, monospace;
+            font-size: 1em;
+        }
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            color: inherit;
+            font: inherit;
+            margin: 0;
+        }
+
+        button {
+            overflow: visible;
+        }
+
+        button,
+        select {
+            text-transform: none;
+        }
+
+        button,
+        html input[type="button"],
+        input[type="reset"],
+        input[type="submit"] {
+            -webkit-appearance: button;
+            cursor: pointer;
+        }
+
+            button[disabled],
+            html input[disabled] {
+                cursor: default;
+            }
+
+            button::-moz-focus-inner,
+            input::-moz-focus-inner {
+                border: 0;
+                padding: 0;
+            }
+
+        input {
+            line-height: normal;
+        }
+
+            input[type="checkbox"],
+            input[type="radio"] {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                padding: 0;
+            }
+
+            input[type="text"]::-webkit-inner-spin-button,
+            input[type="text"]::-webkit-outer-spin-button {
+                height: auto;
+            }
+
+            input[type="search"] {
+                -webkit-appearance: textfield;
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+            }
+
+                input[type="search"]::-webkit-search-cancel-button,
+                input[type="search"]::-webkit-search-decoration {
+                    -webkit-appearance: none;
+                }
+
+        fieldset {
+            border: 1px solid #c0c0c0;
+            margin: 0 2px;
+            padding: 0.35em 0.625em 0.75em;
+        }
+
+        legend {
+            border: 0;
+            padding: 0;
+        }
+
+        textarea {
+            overflow: auto;
+        }
+
+        optgroup {
+            font-weight: bold;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        td,
+        th {
+            padding: 0;
+        }
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+            *:before,
+            *:after {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+        html {
+            font-size: 10px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #333333;
+            background-color: #ffffff;
+        }
+
+        input,
+        button,
+        select,
+        textarea {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+            a:hover,
+            a:focus {
+                color: #23527c;
+                text-decoration: underline;
+            }
+
+            a:focus {
+                outline: 5px auto -webkit-focus-ring-color;
+                outline-offset: -2px;
+            }
+
+        figure {
+            margin: 0;
+        }
+
+        img {
+            vertical-align: middle;
+        }
+
+        .img-responsive {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .img-rounded {
+            border-radius: 6px;
+        }
+
+        .img-thumbnail {
+            padding: 4px;
+            line-height: 1.42857143;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            -webkit-transition: all 0.2s ease-in-out;
+            -o-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+            display: inline-block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .img-circle {
+            border-radius: 50%;
+        }
+
+        hr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 1px solid #eeeeee;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .sr-only-focusable:active,
+        .sr-only-focusable:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            margin: 0;
+            overflow: visible;
+            clip: auto;
+        }
+
+        [role="button"] {
+            cursor: pointer;
+        }
+
+        .container {
+            margin-right: auto;
+            margin-left: auto;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                width: 750px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                width: 970px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                width: 1170px;
+            }
+        }
+
+        .container-fluid {
+            margin-right: auto;
+            margin-left: auto;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+            float: left;
+        }
+
+        .col-xs-12 {
+            width: 100%;
+        }
+
+        .col-xs-11 {
+            width: 91.66666667%;
+        }
+
+        .col-xs-10 {
+            width: 83.33333333%;
+        }
+
+        .col-xs-9 {
+            width: 75%;
+        }
+
+        .col-xs-8 {
+            width: 66.66666667%;
+        }
+
+        .col-xs-7 {
+            width: 58.33333333%;
+        }
+
+        .col-xs-6 {
+            width: 50%;
+        }
+
+        .col-xs-5 {
+            width: 41.66666667%;
+        }
+
+        .col-xs-4 {
+            width: 33.33333333%;
+        }
+
+        .col-xs-3 {
+            width: 25%;
+        }
+
+        .col-xs-2 {
+            width: 16.66666667%;
+        }
+
+        .col-xs-1 {
+            width: 8.33333333%;
+        }
+
+        .col-xs-pull-12 {
+            right: 100%;
+        }
+
+        .col-xs-pull-11 {
+            right: 91.66666667%;
+        }
+
+        .col-xs-pull-10 {
+            right: 83.33333333%;
+        }
+
+        .col-xs-pull-9 {
+            right: 75%;
+        }
+
+        .col-xs-pull-8 {
+            right: 66.66666667%;
+        }
+
+        .col-xs-pull-7 {
+            right: 58.33333333%;
+        }
+
+        .col-xs-pull-6 {
+            right: 50%;
+        }
+
+        .col-xs-pull-5 {
+            right: 41.66666667%;
+        }
+
+        .col-xs-pull-4 {
+            right: 33.33333333%;
+        }
+
+        .col-xs-pull-3 {
+            right: 25%;
+        }
+
+        .col-xs-pull-2 {
+            right: 16.66666667%;
+        }
+
+        .col-xs-pull-1 {
+            right: 8.33333333%;
+        }
+
+        .col-xs-pull-0 {
+            right: auto;
+        }
+
+        .col-xs-push-12 {
+            left: 100%;
+        }
+
+        .col-xs-push-11 {
+            left: 91.66666667%;
+        }
+
+        .col-xs-push-10 {
+            left: 83.33333333%;
+        }
+
+        .col-xs-push-9 {
+            left: 75%;
+        }
+
+        .col-xs-push-8 {
+            left: 66.66666667%;
+        }
+
+        .col-xs-push-7 {
+            left: 58.33333333%;
+        }
+
+        .col-xs-push-6 {
+            left: 50%;
+        }
+
+        .col-xs-push-5 {
+            left: 41.66666667%;
+        }
+
+        .col-xs-push-4 {
+            left: 33.33333333%;
+        }
+
+        .col-xs-push-3 {
+            left: 25%;
+        }
+
+        .col-xs-push-2 {
+            left: 16.66666667%;
+        }
+
+        .col-xs-push-1 {
+            left: 8.33333333%;
+        }
+
+        .col-xs-push-0 {
+            left: auto;
+        }
+
+        .col-xs-offset-12 {
+            margin-left: 100%;
+        }
+
+        .col-xs-offset-11 {
+            margin-left: 91.66666667%;
+        }
+
+        .col-xs-offset-10 {
+            margin-left: 83.33333333%;
+        }
+
+        .col-xs-offset-9 {
+            margin-left: 75%;
+        }
+
+        .col-xs-offset-8 {
+            margin-left: 66.66666667%;
+        }
+
+        .col-xs-offset-7 {
+            margin-left: 58.33333333%;
+        }
+
+        .col-xs-offset-6 {
+            margin-left: 50%;
+        }
+
+        .col-xs-offset-5 {
+            margin-left: 41.66666667%;
+        }
+
+        .col-xs-offset-4 {
+            margin-left: 33.33333333%;
+        }
+
+        .col-xs-offset-3 {
+            margin-left: 25%;
+        }
+
+        .col-xs-offset-2 {
+            margin-left: 16.66666667%;
+        }
+
+        .col-xs-offset-1 {
+            margin-left: 8.33333333%;
+        }
+
+        .col-xs-offset-0 {
+            margin-left: 0%;
+        }
+
+        @media (min-width: 768px) {
+            .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+                float: left;
+            }
+
+            .col-sm-12 {
+                width: 100%;
+            }
+
+            .col-sm-11 {
+                width: 91.66666667%;
+            }
+
+            .col-sm-10 {
+                width: 83.33333333%;
+            }
+
+            .col-sm-9 {
+                width: 75%;
+            }
+
+            .col-sm-8 {
+                width: 66.66666667%;
+            }
+
+            .col-sm-7 {
+                width: 58.33333333%;
+            }
+
+            .col-sm-6 {
+                width: 50%;
+            }
+
+            .col-sm-5 {
+                width: 41.66666667%;
+            }
+
+            .col-sm-4 {
+                width: 33.33333333%;
+            }
+
+            .col-sm-3 {
+                width: 25%;
+            }
+
+            .col-sm-2 {
+                width: 16.66666667%;
+            }
+
+            .col-sm-1 {
+                width: 8.33333333%;
+            }
+
+            .col-sm-pull-12 {
+                right: 100%;
+            }
+
+            .col-sm-pull-11 {
+                right: 91.66666667%;
+            }
+
+            .col-sm-pull-10 {
+                right: 83.33333333%;
+            }
+
+            .col-sm-pull-9 {
+                right: 75%;
+            }
+
+            .col-sm-pull-8 {
+                right: 66.66666667%;
+            }
+
+            .col-sm-pull-7 {
+                right: 58.33333333%;
+            }
+
+            .col-sm-pull-6 {
+                right: 50%;
+            }
+
+            .col-sm-pull-5 {
+                right: 41.66666667%;
+            }
+
+            .col-sm-pull-4 {
+                right: 33.33333333%;
+            }
+
+            .col-sm-pull-3 {
+                right: 25%;
+            }
+
+            .col-sm-pull-2 {
+                right: 16.66666667%;
+            }
+
+            .col-sm-pull-1 {
+                right: 8.33333333%;
+            }
+
+            .col-sm-pull-0 {
+                right: auto;
+            }
+
+            .col-sm-push-12 {
+                left: 100%;
+            }
+
+            .col-sm-push-11 {
+                left: 91.66666667%;
+            }
+
+            .col-sm-push-10 {
+                left: 83.33333333%;
+            }
+
+            .col-sm-push-9 {
+                left: 75%;
+            }
+
+            .col-sm-push-8 {
+                left: 66.66666667%;
+            }
+
+            .col-sm-push-7 {
+                left: 58.33333333%;
+            }
+
+            .col-sm-push-6 {
+                left: 50%;
+            }
+
+            .col-sm-push-5 {
+                left: 41.66666667%;
+            }
+
+            .col-sm-push-4 {
+                left: 33.33333333%;
+            }
+
+            .col-sm-push-3 {
+                left: 25%;
+            }
+
+            .col-sm-push-2 {
+                left: 16.66666667%;
+            }
+
+            .col-sm-push-1 {
+                left: 8.33333333%;
+            }
+
+            .col-sm-push-0 {
+                left: auto;
+            }
+
+            .col-sm-offset-12 {
+                margin-left: 100%;
+            }
+
+            .col-sm-offset-11 {
+                margin-left: 91.66666667%;
+            }
+
+            .col-sm-offset-10 {
+                margin-left: 83.33333333%;
+            }
+
+            .col-sm-offset-9 {
+                margin-left: 75%;
+            }
+
+            .col-sm-offset-8 {
+                margin-left: 66.66666667%;
+            }
+
+            .col-sm-offset-7 {
+                margin-left: 58.33333333%;
+            }
+
+            .col-sm-offset-6 {
+                margin-left: 50%;
+            }
+
+            .col-sm-offset-5 {
+                margin-left: 41.66666667%;
+            }
+
+            .col-sm-offset-4 {
+                margin-left: 33.33333333%;
+            }
+
+            .col-sm-offset-3 {
+                margin-left: 25%;
+            }
+
+            .col-sm-offset-2 {
+                margin-left: 16.66666667%;
+            }
+
+            .col-sm-offset-1 {
+                margin-left: 8.33333333%;
+            }
+
+            .col-sm-offset-0 {
+                margin-left: 0%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+                float: left;
+            }
+
+            .col-md-12 {
+                width: 100%;
+            }
+
+            .col-md-11 {
+                width: 91.66666667%;
+            }
+
+            .col-md-10 {
+                width: 83.33333333%;
+            }
+
+            .col-md-9 {
+                width: 75%;
+            }
+
+            .col-md-8 {
+                width: 66.66666667%;
+            }
+
+            .col-md-7 {
+                width: 58.33333333%;
+            }
+
+            .col-md-6 {
+                width: 50%;
+            }
+
+            .col-md-5 {
+                width: 41.66666667%;
+            }
+
+            .col-md-4 {
+                width: 33.33333333%;
+            }
+
+            .col-md-3 {
+                width: 25%;
+            }
+
+            .col-md-2 {
+                width: 16.66666667%;
+            }
+
+            .col-md-1 {
+                width: 8.33333333%;
+            }
+
+            .col-md-pull-12 {
+                right: 100%;
+            }
+
+            .col-md-pull-11 {
+                right: 91.66666667%;
+            }
+
+            .col-md-pull-10 {
+                right: 83.33333333%;
+            }
+
+            .col-md-pull-9 {
+                right: 75%;
+            }
+
+            .col-md-pull-8 {
+                right: 66.66666667%;
+            }
+
+            .col-md-pull-7 {
+                right: 58.33333333%;
+            }
+
+            .col-md-pull-6 {
+                right: 50%;
+            }
+
+            .col-md-pull-5 {
+                right: 41.66666667%;
+            }
+
+            .col-md-pull-4 {
+                right: 33.33333333%;
+            }
+
+            .col-md-pull-3 {
+                right: 25%;
+            }
+
+            .col-md-pull-2 {
+                right: 16.66666667%;
+            }
+
+            .col-md-pull-1 {
+                right: 8.33333333%;
+            }
+
+            .col-md-pull-0 {
+                right: auto;
+            }
+
+            .col-md-push-12 {
+                left: 100%;
+            }
+
+            .col-md-push-11 {
+                left: 91.66666667%;
+            }
+
+            .col-md-push-10 {
+                left: 83.33333333%;
+            }
+
+            .col-md-push-9 {
+                left: 75%;
+            }
+
+            .col-md-push-8 {
+                left: 66.66666667%;
+            }
+
+            .col-md-push-7 {
+                left: 58.33333333%;
+            }
+
+            .col-md-push-6 {
+                left: 50%;
+            }
+
+            .col-md-push-5 {
+                left: 41.66666667%;
+            }
+
+            .col-md-push-4 {
+                left: 33.33333333%;
+            }
+
+            .col-md-push-3 {
+                left: 25%;
+            }
+
+            .col-md-push-2 {
+                left: 16.66666667%;
+            }
+
+            .col-md-push-1 {
+                left: 8.33333333%;
+            }
+
+            .col-md-push-0 {
+                left: auto;
+            }
+
+            .col-md-offset-12 {
+                margin-left: 100%;
+            }
+
+            .col-md-offset-11 {
+                margin-left: 91.66666667%;
+            }
+
+            .col-md-offset-10 {
+                margin-left: 83.33333333%;
+            }
+
+            .col-md-offset-9 {
+                margin-left: 75%;
+            }
+
+            .col-md-offset-8 {
+                margin-left: 66.66666667%;
+            }
+
+            .col-md-offset-7 {
+                margin-left: 58.33333333%;
+            }
+
+            .col-md-offset-6 {
+                margin-left: 50%;
+            }
+
+            .col-md-offset-5 {
+                margin-left: 41.66666667%;
+            }
+
+            .col-md-offset-4 {
+                margin-left: 33.33333333%;
+            }
+
+            .col-md-offset-3 {
+                margin-left: 25%;
+            }
+
+            .col-md-offset-2 {
+                margin-left: 16.66666667%;
+            }
+
+            .col-md-offset-1 {
+                margin-left: 8.33333333%;
+            }
+
+            .col-md-offset-0 {
+                margin-left: 0%;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+                float: left;
+            }
+
+            .col-lg-12 {
+                width: 100%;
+            }
+
+            .col-lg-11 {
+                width: 91.66666667%;
+            }
+
+            .col-lg-10 {
+                width: 83.33333333%;
+            }
+
+            .col-lg-9 {
+                width: 75%;
+            }
+
+            .col-lg-8 {
+                width: 66.66666667%;
+            }
+
+            .col-lg-7 {
+                width: 58.33333333%;
+            }
+
+            .col-lg-6 {
+                width: 50%;
+            }
+
+            .col-lg-5 {
+                width: 41.66666667%;
+            }
+
+            .col-lg-4 {
+                width: 33.33333333%;
+            }
+
+            .col-lg-3 {
+                width: 25%;
+            }
+
+            .col-lg-2 {
+                width: 16.66666667%;
+            }
+
+            .col-lg-1 {
+                width: 8.33333333%;
+            }
+
+            .col-lg-pull-12 {
+                right: 100%;
+            }
+
+            .col-lg-pull-11 {
+                right: 91.66666667%;
+            }
+
+            .col-lg-pull-10 {
+                right: 83.33333333%;
+            }
+
+            .col-lg-pull-9 {
+                right: 75%;
+            }
+
+            .col-lg-pull-8 {
+                right: 66.66666667%;
+            }
+
+            .col-lg-pull-7 {
+                right: 58.33333333%;
+            }
+
+            .col-lg-pull-6 {
+                right: 50%;
+            }
+
+            .col-lg-pull-5 {
+                right: 41.66666667%;
+            }
+
+            .col-lg-pull-4 {
+                right: 33.33333333%;
+            }
+
+            .col-lg-pull-3 {
+                right: 25%;
+            }
+
+            .col-lg-pull-2 {
+                right: 16.66666667%;
+            }
+
+            .col-lg-pull-1 {
+                right: 8.33333333%;
+            }
+
+            .col-lg-pull-0 {
+                right: auto;
+            }
+
+            .col-lg-push-12 {
+                left: 100%;
+            }
+
+            .col-lg-push-11 {
+                left: 91.66666667%;
+            }
+
+            .col-lg-push-10 {
+                left: 83.33333333%;
+            }
+
+            .col-lg-push-9 {
+                left: 75%;
+            }
+
+            .col-lg-push-8 {
+                left: 66.66666667%;
+            }
+
+            .col-lg-push-7 {
+                left: 58.33333333%;
+            }
+
+            .col-lg-push-6 {
+                left: 50%;
+            }
+
+            .col-lg-push-5 {
+                left: 41.66666667%;
+            }
+
+            .col-lg-push-4 {
+                left: 33.33333333%;
+            }
+
+            .col-lg-push-3 {
+                left: 25%;
+            }
+
+            .col-lg-push-2 {
+                left: 16.66666667%;
+            }
+
+            .col-lg-push-1 {
+                left: 8.33333333%;
+            }
+
+            .col-lg-push-0 {
+                left: auto;
+            }
+
+            .col-lg-offset-12 {
+                margin-left: 100%;
+            }
+
+            .col-lg-offset-11 {
+                margin-left: 91.66666667%;
+            }
+
+            .col-lg-offset-10 {
+                margin-left: 83.33333333%;
+            }
+
+            .col-lg-offset-9 {
+                margin-left: 75%;
+            }
+
+            .col-lg-offset-8 {
+                margin-left: 66.66666667%;
+            }
+
+            .col-lg-offset-7 {
+                margin-left: 58.33333333%;
+            }
+
+            .col-lg-offset-6 {
+                margin-left: 50%;
+            }
+
+            .col-lg-offset-5 {
+                margin-left: 41.66666667%;
+            }
+
+            .col-lg-offset-4 {
+                margin-left: 33.33333333%;
+            }
+
+            .col-lg-offset-3 {
+                margin-left: 25%;
+            }
+
+            .col-lg-offset-2 {
+                margin-left: 16.66666667%;
+            }
+
+            .col-lg-offset-1 {
+                margin-left: 8.33333333%;
+            }
+
+            .col-lg-offset-0 {
+                margin-left: 0%;
+            }
+        }
+
+        .clearfix:before,
+        .clearfix:after,
+        .container:before,
+        .container:after,
+        .container-fluid:before,
+        .container-fluid:after,
+        .row:before,
+        .row:after {
+            content: " ";
+            display: table;
+        }
+
+        .clearfix:after,
+        .container:after,
+        .container-fluid:after,
+        .row:after {
+            clear: both;
+        }
+
+        .center-block {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .pull-right {
+            float: right !important;
+        }
+
+        .pull-left {
+            float: left !important;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        .show {
+            display: block !important;
+        }
+
+        .invisible {
+            visibility: hidden;
+        }
+
+        .text-hide {
+            font: 0/0 a;
+            color: transparent;
+            text-shadow: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .affix {
+            position: fixed;
+        }
+
+        @-ms-viewport {
+            width: device-width;
+        }
+
+        .visible-xs,
+        .visible-sm,
+        .visible-md,
+        .visible-lg {
+            display: none !important;
+        }
+
+        .visible-xs-block,
+        .visible-xs-inline,
+        .visible-xs-inline-block,
+        .visible-sm-block,
+        .visible-sm-inline,
+        .visible-sm-inline-block,
+        .visible-md-block,
+        .visible-md-inline,
+        .visible-md-inline-block,
+        .visible-lg-block,
+        .visible-lg-inline,
+        .visible-lg-inline-block {
+            display: none !important;
+        }
+
+        @media (max-width: 767px) {
+            .visible-xs {
+                display: block !important;
+            }
+
+            table.visible-xs {
+                display: table !important;
+            }
+
+            tr.visible-xs {
+                display: table-row !important;
+            }
+
+            th.visible-xs,
+            td.visible-xs {
+                display: table-cell !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .visible-xs-block {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .visible-xs-inline {
+                display: inline !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .visible-xs-inline-block {
+                display: inline-block !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .visible-sm {
+                display: block !important;
+            }
+
+            table.visible-sm {
+                display: table !important;
+            }
+
+            tr.visible-sm {
+                display: table-row !important;
+            }
+
+            th.visible-sm,
+            td.visible-sm {
+                display: table-cell !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .visible-sm-block {
+                display: block !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .visible-sm-inline {
+                display: inline !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .visible-sm-inline-block {
+                display: inline-block !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .visible-md {
+                display: block !important;
+            }
+
+            table.visible-md {
+                display: table !important;
+            }
+
+            tr.visible-md {
+                display: table-row !important;
+            }
+
+            th.visible-md,
+            td.visible-md {
+                display: table-cell !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .visible-md-block {
+                display: block !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .visible-md-inline {
+                display: inline !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .visible-md-inline-block {
+                display: inline-block !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .visible-lg {
+                display: block !important;
+            }
+
+            table.visible-lg {
+                display: table !important;
+            }
+
+            tr.visible-lg {
+                display: table-row !important;
+            }
+
+            th.visible-lg,
+            td.visible-lg {
+                display: table-cell !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .visible-lg-block {
+                display: block !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .visible-lg-inline {
+                display: inline !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .visible-lg-inline-block {
+                display: inline-block !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hidden-xs {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .hidden-sm {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .hidden-md {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .hidden-lg {
+                display: none !important;
+            }
+        }
+
+        .visible-print {
+            display: none !important;
+        }
+
+        @media print {
+            .visible-print {
+                display: block !important;
+            }
+
+            table.visible-print {
+                display: table !important;
+            }
+
+            tr.visible-print {
+                display: table-row !important;
+            }
+
+            th.visible-print,
+            td.visible-print {
+                display: table-cell !important;
+            }
+        }
+
+        .visible-print-block {
+            display: none !important;
+        }
+
+        @media print {
+            .visible-print-block {
+                display: block !important;
+            }
+        }
+
+        .visible-print-inline {
+            display: none !important;
+        }
+
+        @media print {
+            .visible-print-inline {
+                display: inline !important;
+            }
+        }
+
+        .visible-print-inline-block {
+            display: none !important;
+        }
+
+        @media print {
+            .visible-print-inline-block {
+                display: inline-block !important;
+            }
+        }
+
+        @media print {
+            .hidden-print {
+                display: none !important;
+            }
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+
+    <!-- General Style -->
+    <style type="text/css">
+
+        body {
+            background-color: #161616;
+            font-family: sans-serif;
+        }
+
+
+        header.header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: black;
+            width: 100%;
+            height: 40px;
+            box-sizing: content-box;
+            z-index: 10000;
+        }
+
+            header.header div {
+                background-color: black;
+                font-weight: bold;
+                padding: 15px 0px;
+                width: 100%;
+                border-bottom: 2px solid #5b5757;
+                color: white;
+                text-align: center;
+            }
+
+        header.functions {
+            position: fixed;
+            top: 52px;
+            left: 0;
+            background-color: black;
+            width: 100%;
+            height: 55px;
+            box-sizing: content-box;
+            z-index: 10000;
+            background-color: black;
+            border-bottom: 2px solid #5b5757;
+        }
+
+            header.functions table {
+                width: 100%;
+                height: 40px;
+                margin: 2px 0px;
+                padding: 0px;
+            }
+
+                header.functions table tr td {
+                    width: 50%;
+                }
+
+                header.functions table div {
+                    width: 85%;
+                    margin: 5px auto;
+                    height: 40px !important;
+                    font-size: 15px;
+                    line-height: 15px;
+                }
+
+        footer.footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: black;
+            width: 100%;
+            height: 40px;
+            box-sizing: content-box;
+            z-index: 10000;
+        }
+
+            footer.footer div {
+                background-color: black;
+                font-weight: bold;
+                height: 100%;
+                padding: 10px;
+                width: 100%;
+                border-top: 2px solid #5b5757;
+                color: white;
+                text-align: center;
+            }
+
+
+        .section-container {
+            width: 100%;
+            height: auto;
+            margin-top: 100px;
+            margin-bottom: 40px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        section.section {
+            padding: 5px 0px;
+            border: 2px solid #5b5757;
+            margin: 10px 0px;
+            background-color: #252525;
+            border-radius: 3px;
+        }
+
+        section .section-header {
+            width: 100%;
+            float: left;
+            padding: 0px 5px;
+            box-sizing: border-box;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            section .section-header .icon {
+                float: left;
+                margin: 5px;
+                width: 15px;
+            }
+
+            section .section-header .title {
+                float: left;
+                margin: 5px;
+            }
+
+        section .section-content {
+            float: left;
+            display: none;
+            border-top: 2px solid #5b5757;
+            width: 100%;
+        }
+
+            section .section-content.active {
+                display: block !important;
+            }
+
+            section .section-content .insider {
+                width: 90%;
+                margin: 10px auto;
+            }
+
+
+        .btn {
+            font-size: 16px;
+            /*margin: .5em 0; */
+            padding: .7em 1em;
+            display: block;
+            position: relative;
+            text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: pointer;
+            text-decoration: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-tap-highlight-color: transparent; /* For some Androids */
+            border: 2px solid #595656;
+            width: 100%;
+            border-radius: 7px;
+            margin: 10px auto;
+            background-color: black;
+            color: white;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+
+            .btn:active {
+                border-color: #000000 !important;
+            }
+
+            .btn.different {
+                border-radius: 0px;
+                border-color: black;
+            }
+
+
+        .switch {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 40px;
+            margin: 10px auto;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-tap-highlight-color: transparent; /* For some Androids */
+        }
+
+
+            .switch div.button {
+                float: left;
+                width: 50%;
+                color: white;
+                background-color: black;
+                text-align: center;
+                padding: 10px 0px;
+                font-weight: bold;
+                border-right: 2px solid gray;
+                border-top: 2px solid gray;
+                border-bottom: 2px solid gray;
+                cursor: pointer;
+            }
+
+                .switch div.button:first-child {
+                    border-left: 2px solid gray;
+                }
+
+                .switch div.button.active {
+                    background-color: gray;
+                    border-top-color: white;
+                    border-bottom-color: white;
+                }
+
+                .switch div.button:active {
+                    background-color: black;
+                    border-top-color: black;
+                    border-color: black;
+                }
+
+
+        .range {
+            -webkit-appearance: none;
+            width: 100%;
+            border-radius: 10px;
+            height: 15px;
+            margin: 10px 0px;
+            background-color: #7c7c7c;
+            outline: none;
+            display: block;
+            margin: auto;
+            margin-bottom: 30px;
+        }
+
+            .range::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 30px;
+                height: 30px;
+                background: black;
+                position: relative;
+                z-index: 3;
+                border-radius: 5px;
+                -webkit-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+                -moz-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+                box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+            }
+
+                .range::-webkit-slider-thumb:after {
+                    content: " ";
+                    width: 160px;
+                    height: 10px;
+                    position: absolute;
+                    z-index: 1;
+                    right: 20px;
+                    top: 5px;
+                    background-color: black;
+                }
+
+            .range::-moz-range-thumb {
+                -webkit-appearance: none;
+                width: 30px;
+                height: 30px;
+                background: black;
+                position: relative;
+                z-index: 3;
+                border-radius: 5px;
+                -webkit-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+                -moz-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+                box-shadow: 1px 1px 5px 1px rgba(255,255,255,.3);
+            }
+
+                .range::-moz-range-thumb:after {
+                    content: " ";
+                    width: 160px;
+                    height: 10px;
+                    position: absolute;
+                    z-index: 1;
+                    right: 20px;
+                    top: 5px;
+                    background-color: black;
+                }
+
+
+        .input {
+            padding: 10px 6px;
+            margin-bottom: 25px;
+            text-indent: 10px;
+            color: white;
+            width: 100%;
+            background: black;
+            border: none;
+            border-bottom: 2px solid #5b5757 !important;
+            box-sizing: border-box;
+            outline: none;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: large;
+        }
+
+
+        /* Design for home section */
+        #home #rfFrequencySwitch div.button {
+            width: 25%;
+        }
+        /* end of design */
+
+
+
+        /* Design for modulation section */
+        #modulation .switch {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+            #modulation .switch#modSource .button {
+                width: 33.33%;
+            }
+
+            #modulation .switch#modType .button {
+                width: 25%;
+            }
+
+            #modulation .switch#modWave .button {
+                width: 25%;
+            }
+        /* end of design */
+
+
+
+        /* Design for sweep */
+        #sweep .switch {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+            #sweep .switch#sweepSw .button {
+                width: 25%;
+            }
+        /* end of design */
+
+
+        /* design for diagnostic */
+        #diagnostic .btn.disable {
+            color: gray;
+            border: none;
+        }
+        /* end of design */
+
+
+        /* design for settings */
+        #settings .page {
+            display: none;
+            width: 100%;
+            margin: 10px auto;
+        }
+
+            #settings .page.active {
+                display: block;
+            }
+
+        #settings #network {
+            color: white;
+        }
+
+        #settings #hotspot {
+            color: white;
+        }
+
+        #settings #ipSec {
+            color: white;
+        }
+        /* end of design */
+
+
+        @media (min-width: 1281px) {
+
+            header.header {
+                height: 60px;
+            }
+
+                header.header div {
+                    padding: 20px;
+                    font-size: large;
+                    border-width: 3px;
+                }
+
+            header.functions .btn {
+                padding: 10px;
+            }
+
+            footer.footer {
+                height: 60px;
+            }
+
+                footer.footer div {
+                    padding: 20px;
+                    font-size: large;
+                    border-width: 3px;
+                }
+
+            .section-container {
+                margin-top: 100px;
+                margin-bottom: 60px;
+            }
+
+            section.section {
+                border-width: 3px;
+                padding: 10px 0px;
+                border-radius: 10px;
+            }
+
+            section .section-header {
+                width: 100%;
+                float: left;
+                padding: 0px 5px;
+                box-sizing: border-box;
+                color: white;
+                font-weight: bold;
+                font-size: large;
+            }
+
+                section .section-header .icon {
+                    float: left;
+                    margin: 10px;
+                    font-size: large;
+                    width: 20px;
+                }
+
+                section .section-header .title {
+                    float: left;
+                    margin: 10px;
+                }
+
+            section .section-content {
+                border-top-width: 3px;
+            }
+        }
+
+        .loader-box {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 40px;
+            width: 100%;
+            z-index: 20000;
+        }
+
+            .loader-box .loader, .loader-box .loader:before, .loader-box .loader:after {
+                border-radius: 50%;
+                width: 1.5em;
+                height: 1.5em;
+                -webkit-animation-fill-mode: both;
+                animation-fill-mode: both;
+                -webkit-animation: load7 1.8s infinite ease-in-out;
+                animation: load7 1.8s infinite ease-in-out;
+            }
+
+            .loader-box .loader {
+                display: none;
+                color: #ffffff;
+                font-size: 10px;
+                margin: 0px auto;
+                position: relative;
+                text-indent: -9999em;
+                -webkit-transform: translateZ(0);
+                -ms-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-animation-delay: -0.16s;
+                animation-delay: -0.16s;
+            }
+
+                .loader-box .loader:before, .loader-box .loader:after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                }
+
+                .loader-box .loader:before {
+                    left: -3.5em;
+                    -webkit-animation-delay: -0.32s;
+                    animation-delay: -0.32s;
+                }
+
+                .loader-box .loader:after {
+                    left: 3.5em;
+                }
+
+        @-webkit-keyframes load7 {
+
+            0%, 80%, 100% {
+                box-shadow: 0 2.5em 0 -1.3em;
+            }
+
+            40% {
+                box-shadow: 0 2.5em 0 0;
+            }
+        }
+
+        @keyframes load7 {
+
+            0%, 80%, 100% {
+                box-shadow: 0 2.5em 0 -1.3em;
+            }
+
+            40% {
+                box-shadow: 0 2.5em 0 0;
+            }
+        }
+    </style>
+
+    <!-- General Script -->
+    <script type="text/javascript">
+        $(function () {
+            var domain = "";
+            var hash = window.location.hash;
+            var inProgress = false;
+            var date = new Date();
+
+            var pulsePeriodUnit = 10e-4; // default is milisecond
+            var pulseWidthUnit = 10e-4; //
+
+            $("#yearInfo").html(date.getFullYear());
+
+            $(".section-header").click(function () {
+
+                if ($(this).find(".icon").html() == "+") {
+                    $(this).find(".icon").html("-");
+                    window.location.hash = $(this).parent().attr("id");
+                    goToByScroll($(this).parent().attr("id"));
+                }
+                else {
+                    $(this).find(".icon").html("+");
+                }
+
+                $(this).parent().find(".section-content").slideToggle("fast");
+            });
+
+            $("#settingsSw").click(function () {
+
+                $("#settings #network").hide();
+                $("#settings #hotspot").hide();
+
+                if ($(this).find("div.button.active").index() == 0) {
+                    $("#settings #network").show();
+                }
+                else {
+                    $("#settings #hotspot").show();
+                }
+            });
+
+            $(".switch").on("click", ".button", function () {
+
+                var main = $(this).parent();
+                if (main.attr("disabled") == "disabled") { return; }
+
+                main.find("div.button").removeClass("active");
+                $(this).addClass("active");
+
+            });
+
+            if (hash.startsWith("#")) {
+                var obj = $("#" + hash.replace("#", "")).find(".section-header");
+                if (!obj.parent().find(".section-content").is(":visible")) { obj.click(); }
+            }
+
+            function goToByScroll(id) {
+                id = id.replace("link", "");
+                $('html,body').animate({ scrollTop: $("#" + id).offset().top - 120 });
+            }
+
+            function send(query, val, callback) {
+
+                if (inProgress) { console.log("in progress"); return; }
+
+                var response = "";
+                $.ajax({
+                    beforeSend: function () {
+                        $(".loader").show();
+                        inProgress = true;
+                        //$("header.header div").html("&nbsp;");
+                    },
+                    complete: function () {
+                        $(".loader").hide();
+                        inProgress = false;
+                        //$("header.header div").html("ERA Control Panel");
+                    },
+                    type: "POST",
+                    url: domain + "?" + query + "=" + val,
+                    success: function (data, status, xhr) {
+                        response = data;
+                        console.log("Data : " + data + "\nStatus = " + status);
+                        inProgress = false;
+                        if (typeof (callback) == 'function') {
+                            callback(response);
+                        }
+                    },
+                    error: function errorHandler(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("An error occured " + textStatus + "\n" + errorThrown);
+                        alert("Please check the connection to ERASynth");
+                    }
+                });
+
+            }
+
+
+            // Home section
+            $("#rfSw").click(function () {
+                var rf_status = $(this).find("div.button.active").index() == 0
+                if (rf_status) { send("rfoutput", 1); }
+                else { send("rfoutput", 0); }
+            });
+
+            $("#rfFrequencySwitch").click(function () {
+
+                var multiplier = 1;
+
+                if ($(this).find("div.button:eq(0)").hasClass("active")) { multiplier = 1; }
+                if ($(this).find("div.button:eq(1)").hasClass("active")) { multiplier = 1000; }
+                if ($(this).find("div.button:eq(2)").hasClass("active")) { multiplier = 1000000; }
+                if ($(this).find("div.button:eq(3)").hasClass("active")) { multiplier = 1000000000; }
+
+                var current_freq = parseFloat($("#rfFrequency").val());
+
+                if (current_freq > 0 && current_freq != null) {
+                    current_freq = Math.round(rf_multiplier * current_freq);
+                    current_freq /= multiplier;
+                    $("#rfFrequency").val(parseFloat(current_freq));
+                }
+
+                rf_multiplier = multiplier;
+            });
+
+            $("#rfFrequency").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_freq = parseFloat($("#rfFrequency").val());
+
+                    if (current_freq > 0 && !isNaN(current_freq)) {
+                        current_freq *= rf_multiplier;
+                        send("frequency", Math.round(current_freq));
+                    }
+                }
+            });
+
+            $("#rfAmplitude").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_amp = parseFloat($("#rfAmplitude").val());
+                    if (!isNaN(current_amp)) {
+                        $("#rfAmpSlider").val(current_amp);
+                        send("amplitude", current_amp);
+                    }
+                }
+            });
+
+            $("#rfAmpSlider").change(function () {
+                $("#rfAmplitude").val(parseFloat($("#rfAmpSlider").val()));
+                send("amplitude", parseInt($(this).val()));
+            });
+            // end section
+
+
+            //Modulation section
+            $("#modSw").on("click", function () {
+
+                var modulationStatus = $(this).find("div.button.active").index() == 0;
+                if (modulationStatus) { send("modulation_on_off", 1); }
+                else { send("modulation_on_off", 0); }
+
+            });
+
+
+
+            $("#modSource").on("click", "div.button", function () {
+                var type = $(this).index(); //  0 = INTERNAL   1 = EXTERNAL   2 = MICROPHONE
+
+                if ($("#modSource div.button:eq(0)").hasClass("active") && !$("#modType div.button:eq(3)").hasClass("active")) {
+                    $("#modWave").show();
+                    $("#modFreq").show();
+                }
+                else {
+                    $("#modWave").hide();
+                    $("#modFreq").hide();
+                }
+
+                send("modulation_source", type);
+            });
+
+            $("#modType").on("click", "div.button", function () {
+
+                $("#modAm, #modFm, #modPulse").hide();
+
+                var type = 0;
+
+                switch ($(this).index()) {
+                    case 0: $("#modAm").show(); type = 2; break;
+                    case 1: $("#modFm").show(); type = 0; break;
+                    case 2: $("#modFm").show(); type = 1; break;
+                    case 3: $("#modPulse").show(); type = 3; break;
+                }
+
+                if ($("#modSource div.button:eq(0)").hasClass("active") && !$("#modType div.button:eq(3)").hasClass("active")) {
+                    $("#modWave").show();
+                    $("#modFreq").show();
+                }
+                else {
+                    $("#modWave").hide();
+                    $("#modFreq").hide();
+                }
+
+                if (type == 3) {
+                    $("#modSource div.button:eq(2)").remove();
+                    $("#modSource div.button").css("width", "50%");
+                }
+                else {
+                    if ($("#modSource").find("div.button").length < 3) {
+                        $("#modSource").append($("<div class='button'>MICROPHONE</div>"));
+                        $("#modSource div.button").css("width", "33.33%");
+                    }
+                }
+
+                send("modulation_type", type);
+            });
+
+            $("#modWave").on("click", "div.button", function () {
+                send("modulation_signal_waveform", $(this).index());
+            });
+
+            $("#modFrequency").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_freq = parseFloat($("#modFrequency").val());
+                    if (current_freq > 0 && !isNaN(current_freq)) {
+                        send("modulation_freq", current_freq);
+                    }
+                }
+            });
+
+            $("#modAmDepth").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_depth = parseInt($("#modAmDepth").val());
+                    if (current_depth > 0 && !isNaN(current_depth)) {
+                        send("modulation_am_depth", current_depth);
+                    }
+                }
+            });
+
+            $("#modAmDepthSlider").change(function () {
+                $("#modAmDepth").val(parseFloat($("#modAmDepthSlider").val()));
+                send("modulation_am_depth", parseInt($(this).val()));
+            });
+
+            $("#modFmDev").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_dev = parseInt($("#modFmDev").val());
+                    if (current_dev > 0 && !isNaN(current_dev)) {
+                        send("modulation_fm_deviation", current_dev);
+                    }
+                }
+            });
+
+            $("#modPulsePeriod").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_period = parseFloat($("#modPulsePeriod").val());
+                    if (current_period > 0 && !isNaN(current_period)) {
+                        var f = current_period * pulsePeriodUnit * 1000000;
+                        send("modulation_pulse_period", Math.round(f));
+                    }
+                }
+            });
+
+            $("#modPulseWidth").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_width = parseFloat($("#modPulseWidth").val());
+                    if (current_width > 0 && !isNaN(current_width)) {
+                        var f = parseInt(current_width * pulseWidthUnit * 10e+5);
+                        send("modulation_pulse_width", f);
+                    }
+                }
+            });
+
+            $("#modPulsePeriodUnit").change(function () {
+                var current_period = parseFloat($("#modPulsePeriod").val());
+                var m = 10e-7;
+                if ($("#modPulsePeriodUnit option:eq(0)").is(":selected")) { m = 1; }
+                else if ($("#modPulsePeriodUnit option:eq(1)").is(":selected")) { m = 10e-4; }
+
+                if (current_period > 0 && !isNaN(current_period)) {
+                    current_period = Math.round(current_period * pulsePeriodUnit * 1000000);
+                    $("#modPulsePeriod").val((current_period / (m * 1000000)));
+                }
+                pulsePeriodUnit = m;
+            });
+
+            $("#modPulseWidthUnit").change(function () {
+                var current_width = parseFloat($("#modPulseWidth").val());
+                var m = 10e-7;
+                if ($("#modPulseWidthUnit option:eq(0)").is(":selected")) { m = 1; }
+                else if ($("#modPulseWidthUnit option:eq(1)").is(":selected")) { m = 10e-4; }
+                if (current_width > 0 && !isNaN(current_width)) {
+                    current_width = Math.round(pulseWidthUnit * current_width * 1000000);
+                    $("#modPulseWidth").val((current_width / (m * 1000000)));
+                }
+                pulseWidthUnit = m;
+
+            });
+
+            //end section
+
+
+
+            // Sweep section
+            var sweep_multiplier = 1;
+
+            $("#sweepSw").click(function () {
+
+                var multiplier = 1;
+
+                if ($(this).find("div.button:eq(0)").hasClass("active")) { multiplier = 1; }
+                if ($(this).find("div.button:eq(1)").hasClass("active")) { multiplier = 1000; }
+                if ($(this).find("div.button:eq(2)").hasClass("active")) { multiplier = 1000000; }
+                if ($(this).find("div.button:eq(3)").hasClass("active")) { multiplier = 1000000000; }
+
+                var startFreq = parseFloat($("#sweepStart").val());
+                var stopFreq = parseFloat($("#sweepStop").val());
+                var stepFreq = parseFloat($("#sweepStep").val());
+
+                if (startFreq > 0 && startFreq != null) {
+                    startFreq = Math.round(startFreq * sweep_multiplier);
+                    startFreq /= multiplier;
+                    $("#sweepStart").val(startFreq);
+                }
+
+                if (stopFreq > 0 && stopFreq != null) {
+                    stopFreq = Math.round(stopFreq * sweep_multiplier);
+                    stopFreq /= multiplier;
+                    $("#sweepStop").val(stopFreq);
+                }
+
+                if (stepFreq > 0 && stepFreq != null) {
+                    stepFreq = Math.round(stepFreq * sweep_multiplier);
+                    stepFreq /= multiplier;
+                    $("#sweepStep").val(stepFreq);
+                }
+
+                sweep_multiplier = multiplier;
+
+            });
+
+            $("#sweepStart").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_depth = parseFloat($("#sweepStart").val());
+                    if (current_depth > 0 && !isNaN(current_depth)) {
+                        send("sweep_start", Math.round(current_depth * sweep_multiplier));
+                    }
+                }
+            });
+
+            $("#sweepStop").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_depth = parseFloat($("#sweepStop").val());
+                    if (current_depth > 0 && !isNaN(current_depth)) {
+                        send("sweep_stop", Math.round(current_depth * sweep_multiplier));
+                    }
+                }
+            });
+
+            $("#sweepStep").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_depth = parseFloat($("#sweepStep").val());
+                    if (current_depth > 0 && !isNaN(current_depth)) {
+                        send("sweep_step", Math.round(current_depth * sweep_multiplier));
+                    }
+                }
+            });
+
+            $("#sweepDwell").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var current_depth = parseInt($("#sweepDwell").val());
+                    if (current_depth > 0 && !isNaN(current_depth)) {
+                        send("sweep_dwell", current_depth);
+                    }
+                }
+            });
+
+            $("#sweepOn").click(function () {
+
+                var sweepon = $(this).find("div.button.active").index() == 0;
+
+                if (sweepon) {
+                    send("sweep_start_stop", 1);
+                    $("#sweepStart, #sweepStartSlider, #sweepStop, #sweepStopSlider, #sweepStep, #sweepStepSlider, #sweepDwell, #sweepDwellSlider, #sweepTrig").attr("disabled", "disabled");
+                    $("#sweepRead, #sweepSubmit, #sweepPreset").addClass("different");
+                }
+                else {
+                    send("sweep_start_stop", 0);
+                    $("#sweepStart, #sweepStartSlider, #sweepStop, #sweepStopSlider, #sweepStep, #sweepStepSlider, #sweepDwell, #sweepDwellSlider, #sweepTrig").removeAttr("disabled");
+                    $("#sweepRead, #sweepSubmit, #sweepPreset").removeClass("different");
+                }
+
+            });
+
+            $("#sweepTrig").click(function () {
+
+                if ($(this).attr("disabled") == "disabled") { return; }
+
+                var trigger_status = $(this).find("div.button.active").index() == 0;
+                if (trigger_status) {
+                    send("sweep_trigger", 0);
+                    $("#sweepDwell,#sweepDwellSlider, #sweepDwellTitle").show();
+                }
+                else {
+                    send("sweep_trigger", 1);
+                    $("#sweepDwell,#sweepDwellSlider, #sweepDwellTitle").hide();
+                }
+
+            });
+            // end section
+
+
+
+
+            // Reference section
+            $("#refSw").click(function () {
+
+                var referenceStatus = $(this).find("div.button.active").index() == 0;
+                if (referenceStatus) { send("reference_int_ext", 0); }
+                else { send("reference_int_ext", 1); }
+
+            });
+
+            $("#refSw1").click(function () {
+
+                var referenceStatus = $(this).find("div.button.active").index() == 0;
+                if (referenceStatus) { send("reference_tcxo_ocxo", 0); }
+                else { send("reference_tcxo_ocxo", 1); }
+
+            });
+            // end section
+
+
+            // Diagnostic section
+            $("#diagRead").click(function () {
+                send("readDiagnostic", 0, function (response) {
+                    var temp = parseFloat(response.temperature);
+                    var fahrenheit = parseFloat((temp * (9 / 5)) + 32);
+                    temp = temp.toFixed(1);
+                    fahrenheit = fahrenheit.toFixed(1);
+                    $("#diagTemp").html("Temperature: " + temp + " " + String.fromCharCode(176) + "C / " + fahrenheit + " " + String.fromCharCode(176) + "F");
+
+                    if (parseInt(response.lock_xtal) == 1) {
+                        $("#diagXtal").html("PLL Lock (Xtal) : Locked").css({ "background-color": "green", "color": "white" });
+                    }
+                    else {
+                        $("#diagXtal").html("PLL Lock (Xtal) : Not Locked").css({ "background-color": "red", "color": "white" });
+                    }
+
+                    if (parseInt(response.lock_lmx1) == 1) {
+                        $("#diagLmx1").html("PLL Lock (LMX1) : Locked").css({ "background-color": "green", "color": "white" });
+                    }
+                    else {
+                        $("#diagLmx1").html("PLL Lock (LMX1) : Not Locked").css({ "background-color": "red", "color": "white" });
+                    }
+
+                    if (parseInt(response.lock_lmx2) == 1) {
+                        $("#diagLmx2").html("PLL Lock (LMX2) : Locked").css({ "background-color": "green", "color": "white" });
+                    }
+                    else {
+                        $("#diagLmx2").html("PLL Lock (LMX2) : Not Locked").css({ "background-color": "red", "color": "white" });
+                    }
+
+                    $("#diagSerial").html("Serial Number : " + response.serial_number);
+
+                    switch (response.model) {
+                        case "0": $("#diagModel").html("Model : ERASynth"); break;
+                        case "1": $("#diagModel").html("Model : ERASynth+"); break;
+                        case "2": $("#diagModel").html("Model : ERASynth++"); break;
+                    }
+
+                    var current = parseFloat(response.current);
+                    var voltage = parseFloat(response.voltage);
+
+                    var power = current * voltage;
+                    current = current.toFixed(2);
+                    voltage = voltage.toFixed(2);
+                    power = power.toFixed(2);
+                    $("#diagPower").html(current + " A x " + voltage + " V = " + power + " W");
+
+                    $("#diagRssi").html("WIFI RSSI (dBm) : " + response.rssi);
+                    $("#diagEm").html("Embedded Ver. : " + response.em);
+                    $("#diagEsp").html("ESP8266 Embedded Ver. : " + response.ESP8266em);
+
+                });
+            });
+            // end section
+
+
+            // Settings section
+            $("#setSave").click(function () {
+
+                if (!confirm("Are you sure?")) { return; }
+
+                if ($("#settingsSw").find("div.button.active").index() == 0) {
+                    if ($("#stationSSID").val() == "") { alert("SSID name can not be empty"); return; }
+                    if ($("#stationPass").val() == "") { alert("Password name can not be empty"); return; }
+                }
+                else {
+                    if ($("#hotspotSSID").val() == "") { alert("SSID name can not be empty"); return; }
+                    if ($("#hotspotPass").val() == "") { alert("Password name can not be empty"); return; }
+                }
+
+                send("wifi_sta_ssid", $("#stationSSID").val(), function () {
+
+                    send("wifi_sta_password", $("#stationPass").val(), function () {
+                        send("wifi_ap_password", $("#hotspotPass").val(), function () {
+                            send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
+                                var ip1 = $("#ip1").val();
+                                ip1 = ip1.split(".");
+
+                                var str_1 = "";
+                                for (var i = 0; i < ip1.length; i++) {
+                                    if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
+                                    else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
+                                    else { str_1 += ip1[i] + "."; }
+                                }
+                                str_1 = str_1.substr(0, str_1.length - 1);
+
+                                send("wifi_ip_address", str_1, function () {
+                                    var ip2 = $("#ip2").val();
+                                    ip2 = ip2.split(".");
+
+                                    var str_2 = "";
+                                    for (var i = 0; i < ip2.length; i++) {
+                                        if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
+                                        else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
+                                        else { str_2 += ip2[i] + "."; }
+                                    }
+                                    str_2 = str_2.substr(0, str_2.length - 1);
+
+                                    send("wifi_subnet_address", str_2, function () {
+                                        var ip3 = $("#ip3").val();
+                                        ip3 = ip3.split(".");
+
+                                        var str_3 = "";
+                                        for (var i = 0; i < ip3.length; i++) {
+                                            if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
+                                            else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
+                                            else { str_3 += ip3[i] + "."; }
+                                        }
+                                        str_3 = str_3.substr(0, str_3.length - 1);
+                                        send("wifi_gateway_address", str_3, function () {
+                                            if ($("#settingsSw").find("div.button.active").index() == 1) { send("wifi_mode", 1); }
+                                            else { send("wifi_mode", 0); }
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                });
+
+            });
+
+            $("#stationSSID").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    send("wifi_sta_ssid", $("#stationSSID").val());
+                }
+            });
+
+            $("#stationPass").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    send("wifi_sta_password", $("#stationPass").val());
+                }
+            });
+
+            $("#hotspotSSID").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    send("wifi_ap_ssid", $("#hotspotSSID").val());
+                }
+            });
+
+            $("#hotspotPass").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    send("wifi_ap_password", $("#hotspotPass").val());
+                }
+            });
+
+            $("#ip1").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var ip1 = $("#ip1").val();
+                    ip1 = ip1.split(".");
+
+                    var str_1 = "";
+                    for (var i = 0; i < ip1.length; i++) {
+                        if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
+                        else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
+                        else { str_1 += ip1[i] + "."; }
+                    }
+                    str_1 = str_1.substr(0, str_1.length - 1);
+                    send("wifi_ip_address", str_1);
+                }
+            });
+
+            $("#ip2").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var ip2 = $("#ip2").val();
+                    ip2 = ip2.split(".");
+
+                    var str_2 = "";
+                    for (var i = 0; i < ip2.length; i++) {
+                        if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
+                        else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
+                        else { str_2 += ip2[i] + "."; }
+                    }
+                    str_2 = str_2.substr(0, str_2.length - 1);
+                    send("wifi_subnet_address", str_2);
+                }
+            });
+
+            $("#ip3").keypress(function (e) {
+                if (e.keyCode == 13) {
+                    var ip3 = $("#ip3").val();
+                    ip3 = ip3.split(".");
+
+                    var str_3 = "";
+                    for (var i = 0; i < ip3.length; i++) {
+                        if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
+                        else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
+                        else { str_3 += ip3[i] + "."; }
+                    }
+                    str_3 = str_3.substr(0, str_3.length - 1);
+                    send("wifi_gateway_address", str_3);
+                }
+            });
+            //end section
+
+
+
+            $("#mainRead").click(function () {
+                send("readAll", "1", function (response) {
+
+                    //
+                    // home section
+                    //
+                    if (parseInt(response.rfoutput) == 1) {
+                        $("#rfSw div.button").removeClass("active").eq(0).addClass("active");
+                    }
+                    else {
+                        $("#rfSw div.button").removeClass("active").eq(1).addClass("active");
+                    }
+
+
+                    $("#rfFrequencySwitch div.button").removeClass("active");
+                    $("#rfFrequencySwitch div.button:eq(0)").addClass("active");
+                    rf_multiplier = 1;
+                    $("#rfFrequency").val(parseInt(response.frequency));
+                    $("#rfAmplitude").val(parseFloat(response.amplitude));
+                    $("#rfAmpSlider").val(parseInt(response.amplitude));
+                    //
+                    // end of section
+                    //
+
+
+
+
+                    //
+                    // modulation section
+                    //
+                    if (parseInt(response.modulation_on_off) == 1) {
+                        $("#modSw div.button").removeClass("active").eq(0).addClass("active");
+                    }
+                    else {
+                        $("#modSw div.button").removeClass("active").eq(1).addClass("active");
+                    }
+                    $("#modSource").html("<div class='button'>INTERNAL</div><div class='button'>EXTERNAL</div><div class='button'>MICROPHONE</div>");
+                    $("#modSource div.button").removeClass("active");
+                    $("#modSource div.button:eq(" + (parseInt(response.modulation_source)) + ")").addClass("active");
+
+                    $("#modWave div.button").removeClass("active");
+                    $("#modWave div.button:eq(" + (parseInt(response.modulation_signal_waveform)) + ")").addClass("active");
+
+                    $("#modType div.button").removeClass("active");
+
+                    var t = parseInt(response.modulation_type);
+                    var tt;
+                    switch (t) {
+                        case 0: tt = 1; break;
+                        case 1: tt = 2; break;
+                        case 2: tt = 0; break;
+                        case 3: tt = 3; break;
+                    }
+
+                    $("#modType div.button:eq(" + tt + ")").addClass("active");
+
+                    $("#modAm, #modFm, #modPulse").hide();
+
+                    if (tt == 0) {
+                        $("#modAm").show();
+                    }
+                    else if (tt == 1 || tt == 2) {
+                        $("#modFm").show();
+                    }
+                    else if (tt == 3) {
+                        $("#modPulse").show();
+                        $("#modSource div.button:eq(2)").remove();
+                        $("#modSource div.button").css("width", "50%");
+                    }
+
+                    $("#modFrequency").val(parseInt(response.modulation_freq));
+
+                    $("#modAmDepth").val(parseInt(response.modulation_am_depth));
+                    $("#modAmDepthSlider").val(parseInt(response.modulation_am_depth));
+
+                    $("#modFmDev").val(parseInt(response.modulation_fm_deviation));
+
+                    $("#modPulsePeriod").val(parseInt(response.modulation_pulse_period));
+                    $("#modPulseWidth").val(parseInt(response.modulation_pulse_width));
+
+                    $("#modPulsePeriodUnit option").removeAttr("selected");
+                    $("#modPulsePeriodUnit option:eq(2)").attr("selected", "selected");
+
+                    $("#modPulseWidthUnit option").removeAttr("selected");
+                    $("#modPulseWidthUnit option:eq(2)").attr("selected", "selected");
+
+                    pulsePeriodUnit = 10e-7;
+                    pulseWidthUnit = 10e-7;
+
+                    if ($("#modSource div.button:eq(0)").hasClass("active") && !$("#modType div.button:eq(3)").hasClass("active")) {
+                        $("#modWave").show();
+                        $("#modFreq").show();
+                    }
+                    else {
+                        $("#modWave").hide();
+                        $("#modFreq").hide();
+                    }
+
+                    //
+                    // end of section
+                    //
+
+
+                    //
+                    // sweep section
+                    //
+                    $("#sweepSw div.button").removeClass("active");
+                    $("#sweepSw div.button:eq(0)").addClass("active");
+                    sweep_multiplier = 1;
+                    $("#sweepStart").val(parseInt(response.sweep_start));
+                    $("#sweepStop").val(parseInt(response.sweep_stop));
+                    $("#sweepStep").val(parseInt(response.sweep_step));
+                    $("#sweepDwell").val(parseInt(response.sweep_dwell));
+
+
+
+                    $("#sweepOn div.button").removeClass("active").eq(~response.sweep_start_stop).addClass("active");
+                    $("#sweepTrig div.button").removeClass("active").eq(response.sweep_trigger).addClass("active");
+
+                    var trigger_status = $("#sweepTrig").find("div.button.active").index() == 0;
+                    if (trigger_status) {
+                        $("#sweepDwell,#sweepDwellSlider, #sweepDwellTitle").show();
+                    }
+                    else {
+                        $("#sweepDwell,#sweepDwellSlider, #sweepDwellTitle").hide();
+                    }
+
+                    var sweepon = $("#sweepOn").find("div.button.active").index() == 0;
+
+                    if (sweepon) {
+                        $("#sweepStart, #sweepStartSlider, #sweepStop, #sweepStopSlider, #sweepStep, #sweepStepSlider, #sweepDwell, #sweepDwellSlider, #sweepTrig").attr("disabled", "disabled");
+                        $("#sweepRead, #sweepSubmit, #sweepPreset").addClass("different");
+                    }
+                    else {
+                        $("#sweepStart, #sweepStartSlider, #sweepStop, #sweepStopSlider, #sweepStep, #sweepStepSlider, #sweepDwell, #sweepDwellSlider, #sweepTrig").removeAttr("disabled");
+                        $("#sweepRead, #sweepSubmit, #sweepPreset").removeClass("different");
+                    }
+                    //
+                    // end of section
+                    //
+
+
+                    //
+                    // reference section
+                    //
+                    $("#refSw div.button").removeClass("active").eq(response.reference_int_ext).addClass("active");
+                    $("#refSw1 div.button").removeClass("active").eq(response.reference_tcxo_ocxo).addClass("active");
+                    //
+                    // end of section
+                    //
+
+
+                    //
+                    // settings section
+                    //
+                    $("#stationSSID").val(response.wifi_sta_ssid);
+                    $("#stationPass").val(response.wifi_sta_password);
+
+                    $("#hotspotSSID").val(response.wifi_ap_ssid);
+                    $("#hotspotPass").val(response.wifi_ap_password);
+
+                    $("#ip1").val(response.wifi_ip_address);
+                    $("#ip2").val(response.wifi_subnet_address);
+                    $("#ip3").val(response.wifi_gateway_address);
+
+                    $("#settingsSw div.button").removeClass("active").eq(response.wifi_mode).addClass("active");
+
+                    $("#settings #network").hide();
+                    $("#settings #hotspot").hide();
+
+                    if ($("#settingsSw div.button.active").index() == 0) {
+                        $("#settings #network").show();
+                    }
+                    else {
+                        $("#settings #hotspot").show();
+                    }
+                    //
+                    // end of section
+                    //
+                });
+            });
+
+            $("#preset").click(function () {
+                send("preset", "1", function (response) {
+                    $("#rfSw div.button").removeClass("active").eq(1).addClass("active");
+                    $("#rfFrequency").val(0);
+                    $("#rfAmplitude").val(0);
+                    $("#rfAmpSlider").val(0);
+                    $("#rfFrequencySwitch div.button").removeClass("active").eq(0).addClass("active");
+
+                    $("#modSw div.button").removeClass("active").eq(1).addClass("active");
+                    $("#modSource div.button").removeClass("active").eq(0).addClass("active");
+                    $("#modType div.button").removeClass("active").eq(0).addClass("active");
+                    $("#modFrequency").val(0);
+                    $("#modAmDepth").val(0);
+                    $("#modAmDepthSlider").val(0);
+                    $("#modFmDev").val(0);
+                    $("#modPulsePeriod").val(0);
+                    $("#modPulseWidth").val(0);
+
+
+                    $("#sweepSw div.button").removeClass("active").eq(0).addClass("active");
+                    $("#sweepStart").val(0);
+                    $("#sweepStop").val(0);
+                    $("#sweepStep").val(0);
+                    $("#sweepDwell").val(0);
+                    $("#sweepOn div.button").removeClass("active").eq(1).addClass("active");
+                    $("#sweepTrig div.button").removeClass("active").eq(1).addClass("active");
+                    $("#refSw div.button").removeClass("active").eq(1).addClass("active");
+                    $("#refSw1 div.button").removeClass("active").eq(1).addClass("active");
+
+                    setTimeout($("#mainRead").click(), 100);
+
+                });
+            });
+
+        });
+    </script>
+
+</head>
+<body>
+    <div class="loader-box">
+        <div class="loader">Loading...</div>
+    </div>
+
+    <header class="header">
+        <div>ERASynth Control Panel</div>
+    </header>
+
+    <header class="functions">
+        <table>
+            <tr>
+                <td>
+                    <div class="btn read" id="mainRead">READ</div>
+                </td>
+                <td>
+                    <div class="btn preset" id="preset">PRESET</div>
+                </td>
+            </tr>
+        </table>
+
+
+    </header>
+
+    <div class="container section-container">
+
+        <div class="row">
+
+            <div class="col-sm-12 col-md-6 col-lg-4">
+
+                <section class="section clearfix" id="home">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">-</div>
+                        <div class="title">HOME</div>
+                    </div>
+
+                    <div class="section-content" style="display:block;">
+
+                        <div class="insider">
+
+                            <div class="switch clearfix" style="margin-top:30px;margin-bottom:30px;" id="rfSw">
+                                <div class="button ">RF ON</div>
+                                <div class="button active">RF OFF</div>
+                            </div>
+
+                            <div class="switch clearfix" id="rfFrequencySwitch">
+                                <div class="button active">Hz</div>
+                                <div class="button">kHz</div>
+                                <div class="button">MHz</div>
+                                <div class="button">GHz</div>
+                            </div>
+
+                            <p style="font-weight:bold;color:white;">Frequency</p>
+                            <p><input type="text" class="input" autocomplete="off" placeholder="Frequency" id="rfFrequency" /></p>
+
+                            <p style="font-weight:bold;color:white;">Amplitude (dBm)</p>
+                            <p><input type="text" class="input" autocomplete="off" placeholder="Amplitude" id="rfAmplitude" /></p>
+
+                            <p><input type="range" class="range" id="rfAmpSlider" min="-60" max="20" step="1" /></p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="section clearfix" id="modulation">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">+</div>
+                        <div class="title">MODULATION</div>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="insider">
+
+
+                            <div class="switch" id="modSw">
+                                <div class="button">ON</div>
+                                <div class="button active">OFF</div>
+                            </div>
+
+                            <div class="switch" id="modSource">
+                                <div class="button active">INTERNAL</div>
+                                <div class="button">EXTERNAL</div>
+                                <div class="button">MICROPHONE</div>
+                            </div>
+
+                            <div class="switch" id="modType">
+                                <div class="button active">AM</div>
+                                <div class="button">NBFM</div>
+                                <div class="button">WBFM</div>
+                                <div class="button">PULSE</div>
+                            </div>
+
+                            <div class="switch" id="modWave">
+                                <div class="button active">Sine</div>
+                                <div class="button">Triangle</div>
+                                <div class="button">Ramp</div>
+                                <div class="button">Square</div>
+                            </div>
+
+
+                            <div id="modFreq">
+                                <p style="font-weight:bold;color:white;">Internal Modulation Frequency (Hz)</p>
+                                <p><input type="text" class="input" autocomplete="off" placeholder="Hz" id="modFrequency" min="1" max="2000" /></p>
+                            </div>
+
+                            <div id="modAm">
+                                <p style="font-weight:bold;color:white;">AM Depth (%)</p>
+                                <p><input type="text" class="input" autocomplete="off" placeholder="%" id="modAmDepth" /></p>
+                                <p><input type="range" class="range" style="margin-top:30px;" id="modAmDepthSlider" /></p>
+                            </div>
+
+                            <div id="modFm" style="display:none;">
+                                <p style="font-weight:bold;color:white;">FM Deviation (Hz)</p>
+                                <p><input type="text" class="input" autocomplete="off" placeholder="Hz" id="modFmDev" /></p>
+                            </div>
+
+                            <div id="modPulse" style="display:none;">
+                                <p style="font-weight:bold;color:white;">Pulse Period</p>
+                                <p>
+                                    <input type="text" class="input" autocomplete="off" id="modPulsePeriod" style="width:85%" />
+                                    <select style="height:48px; background-color: black; color: white; border:none; outline: none; border-bottom: 2px solid #5b5757;" id="modPulsePeriodUnit">
+                                        <option>s</option>
+                                        <option selected>ms</option>
+                                        <option>us</option>
+                                    </select>
+                                </p>
+
+                                <p style="font-weight:bold;color:white;">Pulse Width</p>
+                                <p>
+                                    <input type="text" class="input" autocomplete="off" id="modPulseWidth" style="width:85%" />
+                                    <select style="height:  48px;background-color: black;color: white;border:  none;outline: none;border-bottom: 2px solid #5b5757;" id="modPulseWidthUnit">
+                                        <option>s</option>
+                                        <option selected>ms</option>
+                                        <option>us</option>
+                                    </select>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4">
+
+                <section class="section clearfix" id="sweep">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">+</div>
+                        <div class="title">SWEEP</div>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="insider">
+
+                            <div class="switch" id="sweepTrig">
+                                <div class="button">FREE RUN</div>
+                                <div class="button active">EXTERNAL</div>
+                            </div>
+
+                            <div class="switch" id="sweepSw">
+                                <div class="button active">Hz</div>
+                                <div class="button">kHz</div>
+                                <div class="button">MHz</div>
+                                <div class="button">GHz</div>
+                            </div>
+
+
+                            <p style="font-weight:bold;color:white;">Start Frequency</p>
+                            <p><input type="text" class="input" autocomplete="off" id="sweepStart" min="0" max="14000000000" value="0" /></p>
+
+                            <p style="font-weight:bold;color:white;">Stop Frequency</p>
+                            <p><input type="text" class="input" autocomplete="off" id="sweepStop" min="0" max="14000000000" value="0" /></p>
+
+                            <p style="font-weight:bold;color:white;">Step Frequency</p>
+                            <p><input type="text" class="input" autocomplete="off" id="sweepStep" min="0" max="14000000000" value="0" /></p>
+
+                            <p style="font-weight:bold;color:white;" id="sweepDwellTitle">Dwell Time (ms)</p>
+                            <p><input type="text" class="input" autocomplete="off" id="sweepDwell" min="0" max="10000" value="20" /></p>
+
+
+                            <div class="switch" id="sweepOn">
+                                <div class="button">START</div>
+                                <div class="button active">STOP</div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="section clearfix" id="reference">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">+</div>
+                        <div class="title">REFERENCE</div>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="insider">
+
+
+                            <div class="switch" id="refSw" style="margin-top:30px;">
+                                <div class="button">INTERNAL</div>
+                                <div class="button active">EXTERNAL</div>
+                            </div>
+
+                            <div class="switch" id="refSw1" style="margin-top:30px;">
+                                <div class="button">TCXO</div>
+                                <div class="button active">OCXO</div>
+                            </div>
+
+                            <p>&nbsp;</p>
+
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4">
+
+                <section class="section clearfix" id="diagnostic">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">+</div>
+                        <div class="title">DIAGNOSTIC</div>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="insider">
+
+                            <div class="btn different" style="margin-top:20px;" id="diagTemp">Temperature</div>
+                            <div class="btn different" id="diagXtal">PLL Lock (Xtal)</div>
+                            <div class="btn different" id="diagLmx1">PLL Lock (LMX1)</div>
+                            <div class="btn different" id="diagLmx2">PLL Lock (LMX2)</div>
+                            <div class="btn different" id="diagPower">Power</div>
+                            <div class="btn different" id="diagRssi">RSSI (dBm)</div>
+                            <div class="btn different" id="diagEm">Embedded Ver.</div>
+                            <div class="btn different" id="diagEsp">ESP8266 Embedded Ver.</div>
+                            <div class="btn different" id="diagSerial">Serial Number</div>
+                            <div class="btn different" id="diagModel">Model</div>
+
+                            <div class="btn" style="margin:30px auto;" id="diagRead">Read All</div>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="section clearfix" id="settings">
+
+                    <div class="section-header clearfix">
+                        <div class="icon">+</div>
+                        <div class="title">SETTINGS</div>
+                    </div>
+
+                    <div class="section-content">
+
+                        <div class="insider">
+
+                            <div class="page active" id="network">
+
+                                <p style="font-weight:bold;">Station SSID</p>
+                                <p><input type="text" class="input" autocomplete="off" placeholder="SSID name" id="stationSSID" /></p>
+                                <p style="font-weight:bold;">Station Password</p>
+                                <p><input type="text" class="input" placeholder="Password" id="stationPass" /></p>
+
+                            </div>
+
+                            <div class="page" id="hotspot">
+
+                                <p style="font-weight:bold;">Hotspot SSID</p>
+                                <p><input type="text" class="input" autocomplete="off" placeholder="SSID name" id="hotspotSSID" /></p>
+                                <p style="font-weight:bold;">Hotspot Password</p>
+                                <p><input type="text" class="input" placeholder="Password" id="hotspotPass" /></p>
+
+                            </div>
+
+                            <div id="ipSec">
+                                <p style="font-weight:bold;">IP Address</p>
+                                <p><input type="text" class="input" placeholder="192.168.xxx.xxx" id="ip1" /></p>
+                                <p style="font-weight:bold;">Subnet Mask</p>
+                                <p><input type="text" class="input" placeholder="192.168.xxx.xxx" id="ip2" /></p>
+                                <p style="font-weight:bold;">Default Gateway</p>
+                                <p><input type="text" class="input" placeholder="192.168.xxx.xxx" id="ip3" /></p>
+                            </div>
+
+                            <div class="switch" id="settingsSw">
+                                <div class="button active">Station</div>
+                                <div class="button">Hotspot</div>
+                            </div>
+
+                            <p><div class="btn" id="setSave">SAVE</div></p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div>
+            <span id="yearInfo"></span> &copy; <a href="http://erainstruments.com" target="_blank" style="color:white; text-decoration:none;">ERA INSTRUMENTS</a> <span style="margin-left:10px;">v1.1.2</span>
+        </div>
+    </footer>
+
+</body>
+</html> 
