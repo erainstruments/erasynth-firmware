@@ -41,10 +41,10 @@ String AP_password = "erainstruments";
 String STA_ssid = "";
 String STA_password = "";
 
-char ssid[40] = "";
-char password[40] = "";
+char ssid[100] = "";
+char password[100] = "";
 
-String ESP8266FirmwareVersion_Str = "v1.0.2";
+String ESP8266FirmwareVersion_Str = "v1.0.3";
 
 ESP8266WebServer server(80);
 
