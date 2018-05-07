@@ -329,14 +329,15 @@ void command(String commandBuffer)
 
 		if (commandBuffer[2] == '0') 
 		{
-			//RF ON-OFF (0=RF OFF; 1=RF ON)  
-			rfOnOff(commandBuffer[3] - 48); 
-
+			// First rf status must be set. It is checked in the function below
 			if (String(commandBuffer[3]) != rfOnOff_Str) 
 			{
 				rfOnOff_Str = String(commandBuffer[3]);
 				setFRAM(_rfOnOff, rfOnOff_Str);
 			}
+
+			//RF ON-OFF (0=RF OFF; 1=RF ON)  
+			rfOnOff(commandBuffer[3] - 48);
 		}
 		else if (commandBuffer[2] == '1') 
 		{
