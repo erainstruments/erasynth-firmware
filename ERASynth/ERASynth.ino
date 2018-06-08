@@ -127,7 +127,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.9";
+String embeddedVersion_Str = "v1.0.10";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";

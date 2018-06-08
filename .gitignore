@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ProjectSettings.json
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/erasynth-firmware/v15/.suo
+/.vs/config

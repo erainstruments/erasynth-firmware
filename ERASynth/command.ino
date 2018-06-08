@@ -24,6 +24,7 @@ void command(String commandBuffer)
 	String Amp_ValueInString = "";
 	uint16_t DAC_Value = 0;
 	uint16_t Amp_Value = 0;
+	uint16_t Depth_Value = 0;
 	float floatAmpValue = 0;
 	uint16_t cur = 0;
 	uint16_t volt = 0;
@@ -659,11 +660,16 @@ void command(String commandBuffer)
 
 			if (commandInString.length() > _amDepth[1]) { Serial.println("Limits exceeded"); break; }
 
-			if (commandInString != amDepth_Str) 
+			Depth_Value = commandInString.toInt();
+
+			if (Depth_Value > 100) { Depth_Value = 100; }
+			
+			if (String(Depth_Value) != amDepth_Str) 
 			{
-				amDepth_Str = commandInString;
+				amDepth_Str = String(Depth_Value);
 				setFRAM(_amDepth, amDepth_Str);
 			}
+
 
 			if (isDebugEnabled) { Serial.print("AM Depth: "); Serial.print(amDepth_Str); Serial.println("%"); }
 		}
