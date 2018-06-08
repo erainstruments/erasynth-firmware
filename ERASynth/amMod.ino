@@ -73,7 +73,7 @@ void amMod()
       amArray[i] = (max_log_upper_bound - sample) * 46.5454; // Slope of RFSA2113 is 46.5454
     }
     
-    delay_ns_amount = (1e9 / (intModFreq * ((float)maxSamplesNum / decimation_value))) - default_delay_in_loop_AM; 
+    delay_ns_amount = (1e9 / (intModFreq * ceil((float)maxSamplesNum / decimation_value))) - default_delay_in_loop_AM; 
     
 	// "delayMicroseconds" function works very accurately in the range 3 microseconds and up.
 	// Arduino cannot assure that delayMicroseconds will perform precisely for smaller delay-times. 

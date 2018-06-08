@@ -166,7 +166,14 @@ void setAmplitude()
 	// Set the calculated amplitude variables.   
 	spiWrite_LMX(&LMX2_R44_update, LMX2_LE); // calibration value of LMX2 output power
 											 // calibration value of three DACs
-	setDAC(DACValue, DAC1_LE);
-	setDAC(DACValue, DAC2_LE);
-	setDAC(DACValue, DAC3_LE);
+	if (rfOnOff_Str == "0")
+	{
+		setMinAmplitude();
+	}
+	else if (rfOnOff_Str ==  "1")
+	{
+		setDAC(DACValue, DAC1_LE);
+		setDAC(DACValue, DAC2_LE);
+		setDAC(DACValue, DAC3_LE);
+	}
 }

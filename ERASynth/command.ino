@@ -24,6 +24,7 @@ void command(String commandBuffer)
 	String Amp_ValueInString = "";
 	uint16_t DAC_Value = 0;
 	uint16_t Amp_Value = 0;
+	uint16_t Depth_Value = 0;
 	float floatAmpValue = 0;
 	uint16_t cur = 0;
 	uint16_t volt = 0;
@@ -329,14 +330,15 @@ void command(String commandBuffer)
 
 		if (commandBuffer[2] == '0') 
 		{
-			//RF ON-OFF (0=RF OFF; 1=RF ON)  
-			rfOnOff(commandBuffer[3] - 48); 
-
+			// First rf status must be set. It is checked in the function below
 			if (String(commandBuffer[3]) != rfOnOff_Str) 
 			{
 				rfOnOff_Str = String(commandBuffer[3]);
 				setFRAM(_rfOnOff, rfOnOff_Str);
 			}
+
+			//RF ON-OFF (0=RF OFF; 1=RF ON)  
+			rfOnOff(commandBuffer[3] - 48);
 		}
 		else if (commandBuffer[2] == '1') 
 		{
@@ -658,11 +660,16 @@ void command(String commandBuffer)
 
 			if (commandInString.length() > _amDepth[1]) { Serial.println("Limits exceeded"); break; }
 
-			if (commandInString != amDepth_Str) 
+			Depth_Value = commandInString.toInt();
+
+			if (Depth_Value > 100) { Depth_Value = 100; }
+			
+			if (String(Depth_Value) != amDepth_Str) 
 			{
-				amDepth_Str = commandInString;
+				amDepth_Str = String(Depth_Value);
 				setFRAM(_amDepth, amDepth_Str);
 			}
+
 
 			if (isDebugEnabled) { Serial.print("AM Depth: "); Serial.print(amDepth_Str); Serial.println("%"); }
 		}
