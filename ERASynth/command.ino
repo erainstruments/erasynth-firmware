@@ -748,7 +748,8 @@ void command(String commandBuffer)
 						amMod();
 						break;
 					case Pulse_Mod:
-						pulseMod();
+						isPulseActive = true;
+						
 						break;
 				}
 				delay(10); // it is required while serial activity
@@ -788,6 +789,7 @@ void command(String commandBuffer)
 						if (isDebugEnabled) { Serial.println("Pulse Modulation: Stopped"); }
 						detachInterrupt(Trig_Inp);
 						Timer2.stop();
+						isPulseActive = false;
 						rfOnOff(rfOnOff_Str.toInt());
 						break;
 				}
@@ -1041,12 +1043,22 @@ void command(String commandBuffer)
 
 	case 'X': 
 
-		//ESP8266 Reset will be activated
-		digitalWrite(Wi_Fi_RST, LOW);
-		delay(100);
-		digitalWrite(Wi_Fi_RST, HIGH);
-		Serial.println("ESP8266 RESET is done!");
-
+		if (commandBuffer[2] == 'I') 
+		{
+			isInitESP8266Done = true;
+			Serial.println("ESP is initiated...");
+		}
+		else 
+		{
+			//ESP8266 Reset will be activated
+			digitalWrite(Wi_Fi_RST, LOW);
+			delay(100);
+			digitalWrite(Wi_Fi_RST, HIGH);
+			delay(500);
+			Serial1.println("<A");
+			Serial.println("ESP8266 RESET is done!");
+		}
+		
 		break;
 
 	default:;

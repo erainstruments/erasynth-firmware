@@ -36,6 +36,12 @@ static inline void delayNanoseconds(uint32_t nsec)
 		);
 }
 
+void delay_micro(uint32_t value) 
+{
+	if (value % 1000 == 0) { delay(value / 1000); }
+	else { delayMicroseconds(value); }
+}
+
 void setDAC(int value, int pin_LE)
 {
 	if (value < 0) { value = 0; }
@@ -146,8 +152,7 @@ void facReset()
 
 void ledBlink()
 {
-	if (ledState == LOW) { ledState = HIGH; }
-	else { ledState = LOW; }
+	ledState = !ledState;
 	digitalWrite(LED, ledState);
 }
 
@@ -318,4 +323,35 @@ String getJSON(String input[][2], uint8_t rows)
 	vals.remove(vals.length() - 1, 1);
 	vals += "}";
 	return vals;
+}
+
+void checkVersion() 
+{
+	String embFirmware = getFRAM(_firmware);
+	
+	Serial.print("FRAM Firmware Version = "); Serial.println(embFirmware);
+	Serial.print("Current Firmware Version = "); Serial.println(embeddedVersion_Str);
+
+	String temp = "";
+	for (int i = 0; i < embFirmware.length(); i++)
+	{
+		if (isDigit(embFirmware[i])) { temp += embFirmware[i]; }
+	}
+
+	uint32_t v_current = temp.toInt();
+
+	temp = "";
+	for (int i = 0; i < embeddedVersion_Str.length(); i++)
+	{
+		if (isDigit(embeddedVersion_Str[i])) { temp += embeddedVersion_Str[i]; }
+	}
+
+	uint32_t v_new = temp.toInt();
+
+	if (v_current != v_new) 
+	{ 
+		Serial.println("Different version detected. Doing FACTORY RESET");
+		setFRAM(_firmware, embeddedVersion_Str); 
+		facReset(); 
+	}
 }

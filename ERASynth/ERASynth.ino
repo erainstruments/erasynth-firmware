@@ -25,7 +25,7 @@ const int LED = 3; //(LED is active Low)
 const int Wi_Fi_Flash = 25;
 const int Wi_Fi_PD = 29;
 const int Wi_Fi_RST = 30;
-const int TCXO_En = 49;
+const int TCXO_En = 49; 
 const int OCXO_En = 36;
 const int SW1 = 43;
 const int NB_FM_En = 35;
@@ -63,7 +63,7 @@ int freqBand = MBand;
 int default_delay_in_loop_NBFM = 4350;
 int default_delay_in_loop_AM = 4350;
 int default_delay_in_loop_WBFM = 4350;
-int default_delay_in_Pulse_Mod = 130; //in us
+int default_delay_in_Pulse_Mod = 30; //in us
 
 float amplitude = 0;
 float lastAmplitude = 0;
@@ -104,6 +104,7 @@ boolean isDebugEnabled = true;
 boolean pulse_condition = true;
 boolean is_sweep_stopped = true;
 boolean isLowPowerModeActive = false;
+boolean isPulseActive = false;
 
 int calculated_waveform[maxSamplesNum] = { 0 };
 
@@ -115,7 +116,7 @@ unsigned long currentMillis = 0;
 // Following variables is a long because of the time, measured in miliseconds,
 // They will become a big number quickly thus can not be stored in int.
 long blinkInterval = 400;           // Interval at which to blink (milliseconds)
-long initESP8266Interval = 2000;    // Interval at which to init ESP8266 (milliseconds)
+long initESP8266Interval = 5000;    // Interval at which to init ESP8266 (milliseconds)
 
 boolean isInitESP8266Done = false;
 boolean stringComplete = false;
@@ -127,7 +128,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.10";
+String embeddedVersion_Str = "v1.0.11";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";
@@ -166,7 +167,6 @@ String RSSI_Str = "";
 String ERASynthModel_Str = ""; // 0:ERASynth, 1:ERASynth+, 2:ERASynth++
 String serialNumber_Str = "";
 String DDSPowerLevel_Str = "";
-
 
 void setup()
 {
@@ -354,6 +354,9 @@ void setup()
 	delay(100);
 	spiWrite_LMX(&LMX2_R0, LMX2_LE);
 
+
+	checkVersion();
+	   
 	if (getFRAM(_isUploadCodeModeActive) == "1")
 	{
 		isUploadCodeModeActive = true;
@@ -438,27 +441,24 @@ void setup()
 		command(">M6" + pulsePeriod_Str);
 		command(">M7" + pulseWidth_Str);
 	}
+
+	Serial1.println("<A");
 }
 
 void loop()
 {
-	if (!isInitESP8266Done && !isUploadCodeModeActive)
+	if (isInitESP8266Done && !isUploadCodeModeActive)
 	{
-		if (millis() > initESP8266Interval)
-		{
-			delay(1000);
-			Serial.println();
-			Serial.println("---------------------------------------------------------------------");
-			// Read the buffer to clear it so we can get pure data
-			Serial1.readString();
-			Serial1.println("<E");
-			ESP8266FirmwareVersion_Str = Serial1.readStringUntil('\r');
-			Serial.print("ESP8266 Embedded Version: ");
-			Serial.println(ESP8266FirmwareVersion_Str);
-			setLastStatesOfESP8266();
-			isInitESP8266Done = true;
-			command(">MS" + modulationOnOff_Str);
-		}
+		Serial.println("---------------------------------------------------------------------");
+		// Read the buffer to clear it so we can get pure data
+		Serial1.readString();
+		Serial1.println("<E");
+		ESP8266FirmwareVersion_Str = Serial1.readStringUntil('\r');
+		Serial.print("ESP8266 Embedded Version: ");
+		Serial.println(ESP8266FirmwareVersion_Str);
+		setLastStatesOfESP8266();
+		isInitESP8266Done = false;
+		command(">MS" + modulationOnOff_Str);
 	}
 
 	if (stringComplete)
@@ -476,23 +476,15 @@ void loop()
 		command(cmd1String);
 		cmd1String = "";
 		isCmd1Exist = false;
-		return;
+		return;				
 	}
 
 	if (nextFreq) { sweepERASynth(); }
 
-	if (!is_modulation_stopped && modType == Pulse_Mod && modSource == Internal && is_pulse_changed)
+	if (!is_modulation_stopped && modType == Pulse_Mod && modSource == Internal && isPulseActive)
 	{
-		is_pulse_changed = false;
-		if (pulse_condition)
-		{
-			Timer2.attachInterrupt(pulse_changed).setPeriod(pulseWidth).start();
-		}
-		else
-		{
-			Timer2.attachInterrupt(pulse_changed).setPeriod(pulsePeriod - pulseWidth).start();
-		}
-	}
+		pulseMod();
+	}	
 
 	if (!is_modulation_stopped && modType == Pulse_Mod && modSource == External)
 	{

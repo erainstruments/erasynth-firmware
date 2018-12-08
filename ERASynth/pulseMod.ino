@@ -18,25 +18,76 @@
 
 void pulseMod()
 {
-	pulsePeriod = pulsePeriod_Str.toInt() - default_delay_in_Pulse_Mod - default_delay_in_Pulse_Mod - 30;
-	pulseWidth = pulseWidth_Str.toInt() - default_delay_in_Pulse_Mod;
+	pulsePeriod = pulsePeriod_Str.toInt(); // - default_delay_in_Pulse_Mod - default_delay_in_Pulse_Mod - 30;
+	pulseWidth = pulseWidth_Str.toInt();   // - default_delay_in_Pulse_Mod;
 
 	if (modSource == Internal)
 	{
+		if (pulsePeriod < pulseWidth) { pulsePeriod = pulseWidth + default_delay_in_Pulse_Mod; }
+
+		if ((pulsePeriod - pulseWidth) < default_delay_in_Pulse_Mod)  { pulsePeriod += (default_delay_in_Pulse_Mod - (pulsePeriod - pulseWidth)); }
+
+    //
+    // while loop add exstra delay so we need to shorten the off time with calibration value
+    //
+		uint32_t offTime = pulsePeriod - pulseWidth - 25;
+		
+		command(">M6" + String(pulsePeriod));
+		command(">M7" + String(pulseWidth));
+
 		if (isDebugEnabled)
 		{
 			Serial.println("Pulse Mod Started with Internal Source");
-			Serial.print("Pulse Width: ");
-			Serial.print(pulseWidth_Str);
-			Serial.println("us");
-			Serial.print("Pulse Period: ");
-			Serial.print(pulsePeriod_Str);
-			Serial.println("us");
+			Serial.print("Pulse Width: ");  Serial.print(pulseWidth);  Serial.println("us");
+			Serial.print("Pulse Period: "); Serial.print(pulsePeriod); Serial.println("us");
+			Serial.print("Off Time : ");    Serial.print(offTime);     Serial.println("us");
 		}
+		
+		while (isPulseActive)
+		{	
+			// ON
+			soft_spiWrite_DAC1(DACValue);
+			soft_spiWrite_DAC2(DACValue);
+			soft_spiWrite_DAC3(DACValue);
 
-		pulse_condition = true;
-		pulse_changed();
-		return;
+			//setDAC(DACValue, DAC1_LE);
+			//setDAC(DACValue, DAC2_LE);
+			//setDAC(DACValue, DAC3_LE);
+			delay_micro(pulseWidth);
+			
+			// OFF
+			soft_spiWrite_DAC1(max_DAC_Value);
+			soft_spiWrite_DAC2(max_DAC_Value);
+			soft_spiWrite_DAC3(max_DAC_Value);
+
+			//setDAC(max_DAC_Value, DAC1_LE);
+			//setDAC(max_DAC_Value, DAC2_LE);
+			//setDAC(max_DAC_Value, DAC3_LE);
+			delay_micro(offTime);
+			
+			if (nextFreq) { sweepERASynth(); }
+
+			serialEvent();
+			serialEvent1();
+
+			if (stringComplete)
+			{
+				stringComplete = false;
+				command(cmdString);
+				cmdString = "";
+				isCmdExist = false;
+				return;
+			}
+
+			if (string1Complete)
+			{
+				string1Complete = false;
+				command(cmd1String);
+				cmd1String = "";
+				isCmd1Exist = false;
+				return;				
+			}
+		}
 	}
 
 	if (modSource == External)
