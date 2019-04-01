@@ -2584,61 +2584,62 @@
                     if ($("#hotspotPass").val() == "") { alert("Password name can not be empty"); return; }
                 }
 
-                send("wifi_sta_ssid", $("#stationSSID").val(), function () {
+                var y = $("#settingsPhase").find("div.button.active").index();
 
-                    send("wifi_sta_password", $("#stationPass").val(), function () {
+                send("phase_noise_mode", y, function () {
 
-                        send("wifi_ap_password", $("#hotspotPass").val(), function () {
+                    send("wifi_sta_ssid", $("#stationSSID").val(), function () {
 
-                            send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
-                                var ip1 = $("#ip1").val();
-                                ip1 = ip1.split(".");
+                        send("wifi_sta_password", $("#stationPass").val(), function () {
 
-                                var str_1 = "";
-                                for (var i = 0; i < ip1.length; i++) {
-                                    if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
-                                    else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
-                                    else { str_1 += ip1[i] + "."; }
-                                }
-                                str_1 = str_1.substr(0, str_1.length - 1);
+                            send("wifi_ap_password", $("#hotspotPass").val(), function () {
 
-                                send("wifi_ip_address", str_1, function () {
-                                    var ip2 = $("#ip2").val();
-                                    ip2 = ip2.split(".");
+                                send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
+                                    var ip1 = $("#ip1").val();
+                                    ip1 = ip1.split(".");
 
-                                    var str_2 = "";
-                                    for (var i = 0; i < ip2.length; i++) {
-                                        if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
-                                        else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
-                                        else { str_2 += ip2[i] + "."; }
+                                    var str_1 = "";
+                                    for (var i = 0; i < ip1.length; i++) {
+                                        if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
+                                        else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
+                                        else { str_1 += ip1[i] + "."; }
                                     }
-                                    str_2 = str_2.substr(0, str_2.length - 1);
+                                    str_1 = str_1.substr(0, str_1.length - 1);
 
-                                    send("wifi_subnet_address", str_2, function () {
-                                        var ip3 = $("#ip3").val();
-                                        ip3 = ip3.split(".");
+                                    send("wifi_ip_address", str_1, function () {
+                                        var ip2 = $("#ip2").val();
+                                        ip2 = ip2.split(".");
 
-                                        var str_3 = "";
-                                        for (var i = 0; i < ip3.length; i++) {
-                                            if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
-                                            else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
-                                            else { str_3 += ip3[i] + "."; }
+                                        var str_2 = "";
+                                        for (var i = 0; i < ip2.length; i++) {
+                                            if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
+                                            else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
+                                            else { str_2 += ip2[i] + "."; }
                                         }
-                                        str_3 = str_3.substr(0, str_3.length - 1);
+                                        str_2 = str_2.substr(0, str_2.length - 1);
 
-                                        send("wifi_gateway_address", str_3, function () {
+                                        send("wifi_subnet_address", str_2, function () {
+                                            var ip3 = $("#ip3").val();
+                                            ip3 = ip3.split(".");
 
-                                            var t = $("#settingsSw").find("div.button.active").index();
-                                            send("wifi_mode", t, function () {
+                                            var str_3 = "";
+                                            for (var i = 0; i < ip3.length; i++) {
+                                                if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
+                                                else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
+                                                else { str_3 += ip3[i] + "."; }
+                                            }
+                                            str_3 = str_3.substr(0, str_3.length - 1);
 
-                                                var y = $("#settingsPhase").find("div.button.active").index();
+                                            send("wifi_gateway_address", str_3, function () {
 
-                                                send("phase_noise_mode", y);
+                                                var t = $("#settingsSw").find("div.button.active").index();
+                                                send("wifi_mode", t);
+
                                             });
-
                                         });
                                     });
                                 });
+
                             });
 
                         });
@@ -2646,7 +2647,6 @@
                     });
 
                 });
-
             });
 
             $("#stationSSID").keypress(function (e) {
