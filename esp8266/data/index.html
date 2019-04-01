@@ -2587,7 +2587,9 @@
                 send("wifi_sta_ssid", $("#stationSSID").val(), function () {
 
                     send("wifi_sta_password", $("#stationPass").val(), function () {
+
                         send("wifi_ap_password", $("#hotspotPass").val(), function () {
+
                             send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
                                 var ip1 = $("#ip1").val();
                                 ip1 = ip1.split(".");
@@ -2623,14 +2625,24 @@
                                             else { str_3 += ip3[i] + "."; }
                                         }
                                         str_3 = str_3.substr(0, str_3.length - 1);
+
                                         send("wifi_gateway_address", str_3, function () {
-                                            if ($("#settingsSw").find("div.button.active").index() == 1) { send("wifi_mode", 1); }
-                                            else { send("wifi_mode", 0); }
+
+                                            var t = $("#settingsSw").find("div.button.active").index();
+                                            send("wifi_mode", t, function () {
+
+                                                var y = $("#settingsPhase").find("div.button.active").index();
+
+                                                send("phase_noise_mode", y);
+                                            });
+
                                         });
                                     });
                                 });
                             });
+
                         });
+
                     });
 
                 });
@@ -2878,7 +2890,7 @@
                     $("#ip3").val(response.wifi_gateway_address);
 
                     $("#settingsSw div.button").removeClass("active").eq(response.wifi_mode).addClass("active");
-
+                    $("#settingsPhase div.button").removeClass("active").eq(response.phase_noise_mode).addClass("active");
                     $("#settings #network").hide();
                     $("#settings #hotspot").hide();
 
@@ -3238,6 +3250,15 @@
                                 <div class="button">Hotspot</div>
                             </div>
 
+                            <p>&nbsp;</p>
+
+                            <div class="switch" id="settingsPhase">
+                                <div class="button active">Low Spurious Mode</div>
+                                <div class="button">Low Phase Noise</div>
+                            </div>
+
+                            <p>&nbsp;</p>
+
                             <p><div class="btn" id="setSave">SAVE</div></p>
 
                         </div>
@@ -3254,7 +3275,7 @@
 
     <footer class="footer">
         <div>
-            <span id="yearInfo"></span> &copy; <a href="http://erainstruments.com" target="_blank" style="color:white; text-decoration:none;">ERA INSTRUMENTS</a> <span style="margin-left:10px;">v1.1.4</span>
+            <span id="yearInfo"></span> &copy; <a href="http://erainstruments.com" target="_blank" style="color:white; text-decoration:none;">ERA INSTRUMENTS</a> <span style="margin-left:10px;">v1.1.5</span>
         </div>
     </footer>
 

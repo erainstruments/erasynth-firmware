@@ -105,6 +105,7 @@ boolean pulse_condition = true;
 boolean is_sweep_stopped = true;
 boolean isLowPowerModeActive = false;
 boolean isPulseActive = false;
+boolean isLowPhaseNoiseActive = false;
 
 int calculated_waveform[maxSamplesNum] = { 0 };
 
@@ -128,7 +129,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.11";
+String embeddedVersion_Str = "v1.0.12";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";
@@ -167,6 +168,7 @@ String RSSI_Str = "";
 String ERASynthModel_Str = ""; // 0:ERASynth, 1:ERASynth+, 2:ERASynth++
 String serialNumber_Str = "";
 String DDSPowerLevel_Str = "";
+String phaseNoise_Str = "";
 
 void setup()
 {
@@ -185,8 +187,7 @@ void setup()
 	digitalWrite(Wi_Fi_PD, HIGH);  // Power-up Wi-Fi 
 	digitalWrite(Wi_Fi_RST, HIGH); // Normal operation
 
-
-								   //TCXO Power-up
+	//TCXO Power-up
 	pinMode(TCXO_En, OUTPUT);
 	digitalWrite(TCXO_En, HIGH);
 
@@ -407,6 +408,7 @@ void setup()
 		pulsePeriod_Str = getFRAM(_pulsePeriod);
 		pulseWidth_Str = getFRAM(_pulseWidth);
 		modulationOnOff_Str = getFRAM(_modulationOnOff);
+		phaseNoise_Str = getFRAM(_phaseNoise);
 
 		// Removes zeros in front of the string
 		while (frequency_Str.indexOf('0') == 0) { frequency_Str.remove(0, 1); }
@@ -421,6 +423,8 @@ void setup()
 		while (pulseWidth_Str.indexOf('0') == 0) { pulseWidth_Str.remove(0, 1); }
 		while (internalModulationFreq_Str.indexOf('0') == 0) { internalModulationFreq_Str.remove(0, 1); }
 
+		// Set Phase Noise Mode first, so frequency calculations will be according to it.
+		command(">P9" + phaseNoise_Str);
 		command(">F" + frequency_Str);
 		command(">A" + amplitude_Str);
 		command(">S1" + startFrequency_Str);

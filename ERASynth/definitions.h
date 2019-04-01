@@ -16,7 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define ERASynth 2
+// Make DEBUG = 1 to write faster when debugging. This will avoid amplitude calibration files to written in flash
+#define DEBUG 0
+#define ERASynth 0
 #define max_DAC_Value 4095
 #define min_DAC_Value 0
 #define LMX1_LE 10
@@ -161,6 +163,7 @@ uint16_t _apModePassword[]			= { _staModePassword[0] + _staModePassword[1],64};
 uint16_t _ipAddress[]				= { _apModePassword[0] + _apModePassword[1],15 };
 uint16_t _gatewayAddress[]			= { _ipAddress[0] + _ipAddress[1],15 };
 uint16_t _subnetAddress[]			= { _gatewayAddress[0] + _gatewayAddress[1],15 };
+uint16_t _phaseNoise[]				= { _subnetAddress[0] + _subnetAddress[1], 1 };
 
 uint8_t init_DDS_CFR1[5]		= {0x00, 0x00, 0x08, 0x00, 0x00};
 uint8_t init_DDS_CFR2[3]		= {0x01, 0x14, 0x20};

@@ -19,14 +19,13 @@
 void setAmplitude()
 {
 	uint16_t LMX2_Amp_Index = 0;
-	uint16_t LMX2_Pwr_Level = 0;
-	uint16_t index_freq		= 0;
-	uint16_t index_amp_low	= 0;
+	uint8_t LMX2_Pwr_Level = 0;
+	uint16_t index_freq = 0;
+	uint16_t index_amp_low = 0;
 	uint16_t index_amp_high = 0;
-	float amplitude_frac	= 0.0;
-	uint16_t DACValue_low	= 0;
-	uint16_t DACValue_high	= 0;
-
+	float amplitude_frac = 0.0;
+	uint16_t DACValue_low = 0;
+	uint16_t DACValue_high = 0;
 
 	// Find first index of Calibration_LUT_n
 	if (lastFrequency > 30e6) 
@@ -92,7 +91,9 @@ void setAmplitude()
 		}
 
 
-		LMX2_R44_update = (LMX2_Pwr_Level << 8) + 2883712;
+		uint32_t p1 = LMX2_Pwr_Level << 8;
+		LMX2_R44_update &= 0xFF00FF;
+		LMX2_R44_update |= p1;
 
 	}
 	else
@@ -131,7 +132,7 @@ void setAmplitude()
 		}
 		else
 		{
-			LMX2_R44_update = 0x2C0080; //Below -20dBm calibration is done with the mininum LMX2 output power
+			LMX2_R44_update &= 0xFF00FF; //Below -20dBm calibration is done with the mininum LMX2 output power
 			index_amp_low = index_amp_low - 40;
 			index_amp_high = index_amp_high - 40;
 			DACValue_low = pgm_read_word(&Calibration_LUT_2[index_freq][index_amp_high]);
@@ -149,11 +150,11 @@ void setAmplitude()
 		}
 		else 
 		{
-			LMX2_R44_update		= 0x2C0080; //Below -20dBm calibration is done with the mininum LMX2 output power
-			index_amp_low		= index_amp_low - 40;
-			index_amp_high		= index_amp_high - 40;
-			DACValue_low		= pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_high]);
-			DACValue_high		= pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_low]);
+			LMX2_R44_update &= 0xFF00FF; //Below -20dBm calibration is done with the mininum LMX2 output power
+			index_amp_low = index_amp_low - 40;
+			index_amp_high = index_amp_high - 40;
+			DACValue_low = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_high]);
+			DACValue_high = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_low]);
 		}
 	}
 	#endif

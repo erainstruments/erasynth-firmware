@@ -548,6 +548,46 @@ void command(String commandBuffer)
 			}
 
 		}
+		else if (commandBuffer[2] == '9')
+		{
+			// Ultra Phase Noise Mode 
+			// 0 = Inactive  1 = Active
+
+			isLowPhaseNoiseActive = (bool)(commandBuffer[3] - 48);
+
+			if (lastFrequency >= 0.25e6 && lastFrequency <= 30e6 && isLowPhaseNoiseActive)
+			{
+				Serial.println("Low phase mode can not be activated in frequency range 250 kHz to 30 MHz");
+				isLowPhaseNoiseActive = false;
+			}
+
+			if (isLowPhaseNoiseActive)
+			{
+				// Bypass LMX1 with switch
+				digitalWrite(SW2, LOW);
+				// Send LMX1 Mute 
+				spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
+				Serial.println("Ultra Low Phase Noise mode is active");
+				delay(50);
+			}
+			else
+			{
+				// Activate LMX1 Path with switch
+				digitalWrite(SW2, HIGH);
+				// Wake up LMX1
+				spiWrite_LMX(&LMX1_R0, LMX1_LE);
+				delay(50);
+				Serial.println("Ultra Low Phase Noise mode is inactive");
+			}
+
+			phaseNoise_Str = isLowPhaseNoiseActive ? "1" : "0";
+			setFRAM(_phaseNoise, phaseNoise_Str);
+
+			setMinAmplitude();
+			setFreqBand(lastFrequency);
+			setFreqParam(lastFrequency);
+			setAmplitude();
+		}
 		break;
 
 	case 'M': 
@@ -801,7 +841,7 @@ void command(String commandBuffer)
 		
 		if (commandBuffer[2] == 'A') //Read All
 		{
-			String vals[28][2];
+			String vals[29][2];
 
 			vals[0][0] = "rfoutput";
 			vals[0][1] = rfOnOff_Str;
@@ -887,7 +927,10 @@ void command(String commandBuffer)
 			vals[27][0] = "wifi_subnet_address";
 			vals[27][1] = subnetAddress_Str;
 
-			String read = getJSON(vals, 28);
+			vals[28][0] = "phase_noise_mode";
+			vals[28][1] = phaseNoise_Str;
+
+			String read = getJSON(vals, 29);
 
 			Serial1.print(read);
 			Serial.println(read);

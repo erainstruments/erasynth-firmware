@@ -129,6 +129,11 @@ void handleCommand()
 		debugPrintln(">PEW" + server.arg("wifi_mode"));
 		server.send(200, "text/plain", "");
 	}
+	else if (server.arg("phase_noise_mode") != "")
+	{
+		debugPrintln(">P9" + server.arg("phase_noise_mode"));
+		server.send(200, "text/plain", "");
+	}
 	else if (server.arg("wifi_sta_ssid") != "") 
 	{
 		debugPrintln(">PES0" + server.arg("wifi_sta_ssid"));

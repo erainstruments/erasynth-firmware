@@ -117,6 +117,7 @@ void setMinAmplitude()
 
 void facReset()
 {
+	command(">P90");
 	command(">F1000000000");
 	command(">A0");
 	command(">S11000000000");
@@ -158,6 +159,7 @@ void ledBlink()
 
 void preset_ERASynth()
 {
+	command(">P90");
 	command(">F1000000000");
 	command(">A0");
 	command(">S11000000000");
