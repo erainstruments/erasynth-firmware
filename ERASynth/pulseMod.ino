@@ -43,6 +43,8 @@ void pulseMod()
 			Serial.print("Off Time : ");    Serial.print(offTime);     Serial.println("us");
 		}
 		
+		SPI.beginTransaction(SPISettings(31e6, MSBFIRST, SPI_MODE1));
+
 		while (isPulseActive)
 		{	
 			// ON
@@ -88,6 +90,8 @@ void pulseMod()
 				return;				
 			}
 		}
+
+		SPI.endTransaction();
 	}
 
 	if (modSource == External)
