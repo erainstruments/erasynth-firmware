@@ -83,9 +83,9 @@ void setFreqParam(uint64_t freq)
 	if (isLowPhaseNoiseActive)
 	{
 		// Bypass LMX1 with switch
-		digitalWrite(SW2, LOW);
+		//digitalWrite(SW2, LOW);
 		// Send LMX1 Mute 
-		spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
+		//spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
 
 		LMX2_R44_update |= 0x0000A3;
 		uint32_t R75 = 0x4B0800 | (CHDIV << 6);
@@ -167,12 +167,16 @@ void setFreqParam(uint64_t freq)
 			delayMicroseconds(500);
 			spiWrite_LMX(&LMX2_R0, LMX2_LE);
 		}
-
+		else
+		{
+      // When LMX works in fractional mode, vco calibration takes longer and we need to wait it to settle 
+			delayMicroseconds(100);
+		}
 	}
 	else
 	{
 		// Activate LMX1 Path with switch
-		digitalWrite(SW2, HIGH);
+		//digitalWrite(SW2, HIGH);
 
 		LMX2_R44_update |= 0x000080;
 
@@ -200,24 +204,27 @@ void setFreqParam(uint64_t freq)
 		N_LMX1_Frac = N_LMX1 - N_LMX1_Int;
 		LMX1_R36_update = N_LMX1_Int + 2359296;
 
-		while (N_LMX1_Frac <= 0.016 || (N_LMX1_Frac >= 0.484 && N_LMX1_Frac <= 0.516) || N_LMX1_Frac >= 0.984 || (N_LMX1_Frac >= 0.234 && N_LMX1_Frac <= 0.266) || (N_LMX1_Frac >= 0.734 && N_LMX1_Frac <= 0.766) || (N_LMX1_Frac >= 0.650 && N_LMX1_Frac <= 0.682) || (N_LMX1_Frac >= 0.317 && N_LMX1_Frac <= 0.349))
-		{
-			Fpfd2 = Fpfd2 - 1e6;
+    if(is_sweep_stopped)
+    {     
+        // this loop is long with some frequencies. So when sweep is on, this loop is avoided.
+		    while (N_LMX1_Frac <= 0.016 || (N_LMX1_Frac >= 0.484 && N_LMX1_Frac <= 0.516) || N_LMX1_Frac >= 0.984 || (N_LMX1_Frac >= 0.234 && N_LMX1_Frac <= 0.266) || (N_LMX1_Frac >= 0.734 && N_LMX1_Frac <= 0.766) || (N_LMX1_Frac >= 0.650 && N_LMX1_Frac <= 0.682) || (N_LMX1_Frac >= 0.317 && N_LMX1_Frac <= 0.349))
+		    {
+			    Fpfd2 = Fpfd2 - 1e6;
 
-			N_LMX2 = floor(FVCO2 / Fpfd2);
+			    N_LMX2 = floor(FVCO2 / Fpfd2);
 
-			LMX2_R36_update = N_LMX2 + 2359296;
-			Fref = FVCO2 / (double)N_LMX2;
+			    LMX2_R36_update = N_LMX2 + 2359296;
+			    Fref = FVCO2 / (double)N_LMX2;
 
-			FVCO1 = Fref * 32;
-			N_LMX1 = FVCO1 / Fpfd1;
-			N_LMX1_Int = floor(N_LMX1);
-			N_LMX1_Frac = N_LMX1 - N_LMX1_Int;
-			LMX1_R36_update = N_LMX1_Int + 2359296;
+			    FVCO1 = Fref * 32;
+			    N_LMX1 = FVCO1 / Fpfd1;
+			    N_LMX1_Int = floor(N_LMX1);
+			    N_LMX1_Frac = N_LMX1 - N_LMX1_Int;
+			    LMX1_R36_update = N_LMX1_Int + 2359296;
 
-			if (loop_count++ == 20) { break; }
-		}
-
+			    if (loop_count++ == 20) { break; }
+		    }
+    }
 
 		if (!is_modulation_stopped && modType == WBFM_Mod)
 		{
@@ -285,6 +292,11 @@ void setFreqParam(uint64_t freq)
 			// if ERASynth is not in sweep mode
 			delayMicroseconds(500);
 			spiWrite_LMX(&LMX2_R0, LMX2_LE);
+		}
+		else
+		{
+			// When LMX works in integer mode, vco calibration takes longer and we need to wait it to settle 
+			delayMicroseconds(50);
 		}
 
 		if (!is_modulation_stopped && modType == WBFM_Mod && !is_sweep_stopped)

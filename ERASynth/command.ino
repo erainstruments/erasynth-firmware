@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void command(String commandBuffer) 
+void command(String commandBuffer)
 {
 	char commandID = 0;
 	String commandInString = "";
@@ -32,18 +32,22 @@ void command(String commandBuffer)
 
 	commandID = (char)commandBuffer[1];
 
-	switch (commandID) 
+	if (commandID == 'F')
 	{
-	case 'F': //Frequency Set
-		for (int i = 2; i <= commandBuffer.length() - 1; i++) 
+		//Frequency Set
+		for (int i = 2; i <= commandBuffer.length() - 1; i++)
 		{
 			if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 		}
 
-		if (commandInString.length() > _freqSize) { Serial.println("Limits exceeded"); break; }
+		if (commandInString.length() > _freqSize) 
+		{ 
+			Serial.println("Limits exceeded"); 
+			return;
+		}
 
 		if (commandInString.length() <= 8) { frequency = (long long)commandInString.toInt(); }
-		else 
+		else
 		{
 			String freqInString1 = "";
 			String freqInString2 = "";
@@ -70,8 +74,8 @@ void command(String commandBuffer)
 
 		if (commandInString != frequency_Str) { frequency_Str = commandInString; setFRAM(_frequency, frequency_Str); }
 
-		Serial.print("Frequency: "); 
-		Serial.print(frequency_Str); 
+		Serial.print("Frequency: ");
+		Serial.print(frequency_Str);
 		Serial.println("Hz");
 
 		lastFrequency = frequency;
@@ -83,15 +87,15 @@ void command(String commandBuffer)
 			setFreqParam(frequency);
 			setAmplitude();
 		}
-		break;
-
-	case 'A': 
+	}
+	else if (commandID == 'A')
+	{
 		//DAC Set  
 		Amp_ValueInString = "";
 
 		if (commandBuffer[2] == 'L') // LMX2 Power Level
 		{
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { Amp_ValueInString += (char)commandBuffer[i]; }
 			}
@@ -104,7 +108,7 @@ void command(String commandBuffer)
 		}
 		else if (commandBuffer[2] == 'D') // DDS Power Level
 		{
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { Amp_ValueInString += (char)commandBuffer[i]; }
 			}
@@ -114,11 +118,11 @@ void command(String commandBuffer)
 			if (DDSPowerLevel > 1023) DDSPowerLevel = 1023;
 
 			DDSPowerLevel_Str = String(DDSPowerLevel);
-			setDDSPowerLevel(DDSPowerLevel); 
+			setDDSPowerLevel(DDSPowerLevel);
 		}
-		else 
+		else
 		{
-			for (int i = 2; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 2; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i]) || commandBuffer[i] == '-' || commandBuffer[i] == '.') { Amp_ValueInString += (char)commandBuffer[i]; }
 			}
@@ -127,26 +131,27 @@ void command(String commandBuffer)
 			if (floatAmpValue < -60) floatAmpValue = -60;
 			if (floatAmpValue > 20) floatAmpValue = 20;
 
-			if (String(floatAmpValue) != amplitude_Str) 
+			if (String(floatAmpValue) != amplitude_Str)
 			{
 				amplitude_Str = String(floatAmpValue);
 				setFRAM(_amplitude, amplitude_Str);
 			}
 
-			Serial.print("Amplitude: "); 
-			Serial.print(amplitude_Str); 
+			Serial.print("Amplitude: ");
+			Serial.print(amplitude_Str);
 			Serial.println("dBm");
 
 			amplitude = floatAmpValue;
 			lastAmplitude = amplitude;
 			setAmplitude();
 		}
-		break;
-
-	case 'L': //LMX Register Set  
+	}
+	else if (commandID == 'L')
+	{
+		//LMX Register Set  
 		LMX_RXX = 0;
-		
-		for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+
+		for (int i = 3; i <= commandBuffer.length() - 1; i++)
 		{
 			if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 		}
@@ -155,29 +160,30 @@ void command(String commandBuffer)
 
 		if (commandBuffer[2] == '1') { spiWrite_LMX(&LMX_RXX, LMX1_LE); }//LMX1
 		else if (commandBuffer[2] == '2') { spiWrite_LMX(&LMX_RXX, LMX2_LE); }//LMX2
-		
-		Serial.print("LMX_RXX: "); Serial.println(LMX_RXX, HEX);
-		break;
 
-	case 'D': //DAC Set
-		
+		Serial.print("LMX_RXX: "); 
+		Serial.println(LMX_RXX, HEX);
+	}
+	else if (commandID == 'D')
+	{
+		//DAC Set
 		DAC_ValueInString = "";
-		
-		for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+
+		for (int i = 3; i <= commandBuffer.length() - 1; i++)
 		{
 			if (isDigit(commandBuffer[i])) { DAC_ValueInString += (char)commandBuffer[i]; }
 		}
 
 		DAC_Value = DAC_ValueInString.toInt();
-		
+
 		if (DAC_Value < 0) DAC_Value = 0;
 		if (DAC_Value > 4095) DAC_Value = 4095;
 
 		DACValue = DAC_Value;
 
-		Serial.print("DAC Value: "); 
+		Serial.print("DAC Value: ");
 		Serial.println(DAC_Value);
-		
+
 		if (commandBuffer[2] == '1')
 		{
 			setDAC(DAC_Value, DAC1_LE);
@@ -196,18 +202,21 @@ void command(String commandBuffer)
 			setDAC(DAC_Value, DAC2_LE);
 			setDAC(DAC_Value, DAC3_LE);
 		}
-		break;
-
-	case 'S':
-		
-		for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+	}
+	else if (commandID == 'S')
+	{
+		for (int i = 3; i <= commandBuffer.length() - 1; i++)
 		{
-			if (isDigit(commandBuffer[i]))  { commandInString += (char)commandBuffer[i]; }
+			if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 		}
 
-		if (commandInString.length() > _freqSize) { Serial.println("Limits exceeded"); break; }
+		if (commandInString.length() > _freqSize) 
+		{ 
+			Serial.println("Limits exceeded"); 
+			return;
+		}
 
-		if (commandInString.length() <= 8) 
+		if (commandInString.length() <= 8)
 		{
 			frequency = (long long)commandInString.toInt();
 		}
@@ -219,61 +228,62 @@ void command(String commandBuffer)
 			for (int i = 8; i < commandInString.length(); i++) { freqInString2 += (char)commandInString[i]; }
 			frequency = (long long)((long long)freqInString1.toInt() * pow(10, commandInString.length() - 8)) + freqInString2.toInt();
 		}
+
 		if (commandBuffer[2] == '0')
-		{ 
+		{
 			//Sweep Trigger Mode (0=Free Run; 1=External)
 			if (commandBuffer[3] == '0') { sweepTriggerMode = false; }
 			else if (commandBuffer[3] == '1') { sweepTriggerMode = true; }
 
-			if (String(commandBuffer[3]) != sweepTriggerMode_Str) 
+			if (String(commandBuffer[3]) != sweepTriggerMode_Str)
 			{
 				sweepTriggerMode_Str = String(commandBuffer[3]);
 				setFRAM(_sweepTriggerMode, sweepTriggerMode_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Sweep Mode Free-Run[0]/External[1]: "); Serial.println(sweepTriggerMode_Str); }
 		}
-		else if (commandBuffer[2] == '1') 
+		else if (commandBuffer[2] == '1')
 		{
 			//Start Frequency in Hz
 			startFrequency = frequency;
 
-			if (commandInString != startFrequency_Str) 
+			if (commandInString != startFrequency_Str)
 			{
 				startFrequency_Str = commandInString;
 				setFRAM(_startFrequency, startFrequency_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Start Frequency: "); Serial.print(startFrequency_Str); Serial.println("Hz"); }
 		}
-		else if (commandBuffer[2] == '2') 
+		else if (commandBuffer[2] == '2')
 		{
 			//Stop Frequency in Hz
 			stopFrequency = frequency;
 
-			if (commandInString != stopFrequency_Str) 
+			if (commandInString != stopFrequency_Str)
 			{
 				stopFrequency_Str = commandInString;
 				setFRAM(_stopFrequency, stopFrequency_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Stop Frequency: "); Serial.print(stopFrequency_Str); Serial.println("Hz"); }
 		}
-		else if (commandBuffer[2] == '3') 
+		else if (commandBuffer[2] == '3')
 		{
 			//Step Frequency in Hz
 			stepFrequency = frequency;
 
-			if (commandInString != stepFrequency_Str) 
+			if (commandInString != stepFrequency_Str)
 			{
 				stepFrequency_Str = commandInString;
 				setFRAM(_stepFrequency, stepFrequency_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Step Frequency: "); Serial.print(stepFrequency_Str); Serial.println("Hz"); }
 		}
-		else if (commandBuffer[2] == '4') 
+		else if (commandBuffer[2] == '4')
 		{
 			//Dwell time in ms
 			dwellTime = (uint32_t)frequency;
 
-			if (String(dwellTime) != dwellTime_Str) 
+			if (String(dwellTime) != dwellTime_Str)
 			{
 				dwellTime_Str = String(dwellTime);
 				setFRAM(_dwellTime, dwellTime_Str);
@@ -281,9 +291,9 @@ void command(String commandBuffer)
 			if (isDebugEnabled) { Serial.print("Dwell Time: "); Serial.print(dwellTime_Str); Serial.println("ms"); }
 		}
 		else if (commandBuffer[2] == 'S')
-		{ 
+		{
 			//Sweep Start-Stop (0=Stop; 1=Start)
-			if (String(commandBuffer[3]) != sweepOnOff_Str) 
+			if (String(commandBuffer[3]) != sweepOnOff_Str)
 			{
 				sweepOnOff_Str = String(commandBuffer[3]);
 				setFRAM(_sweepOnOff, sweepOnOff_Str);
@@ -292,28 +302,6 @@ void command(String commandBuffer)
 			if (commandBuffer[3] == '1')
 			{
 				is_sweep_stopped = false;
-				if (isDebugEnabled) { Serial.println("Frequency Sweep: Started"); }
-
-				number_of_sweep_points = ((stopFrequency - startFrequency) / stepFrequency) + 1;
-
-				if (stopFrequency > 30e6 || startFrequency > 30e6) 
-				{
-					// Turn on LMX2 incase present path was LF Path
-					spiWrite_LMX(&LMX2_R0, LMX2_LE); 
-					delay(10);
-				}
-
-				sweepIndex = 0;
-				sweepERASynth();
-
-				if (!sweepTriggerMode) 
-				{
-					Timer4.attachInterrupt(sweepRoutine).setPeriod(dwellTime * 1000).start();  // attaches sweepERASynth() as a timer function called every dwellTime milliseconds:
-				}
-				else 
-				{
-					attachInterrupt(Trig_Inp, sweepRoutine, RISING);
-				}
 			}
 			else if (commandBuffer[3] == '0')
 			{
@@ -324,14 +312,46 @@ void command(String commandBuffer)
 				command(">F" + frequency_Str); // Recall last frequency
 			}
 		}
-		break;
 
-	case 'P': //Path Selections
 
-		if (commandBuffer[2] == '0') 
+		// Set Sweep Parameters
+		if (!is_sweep_stopped)
+		{
+			Timer4.stop(); detachInterrupt(Trig_Inp);
+
+			if (isDebugEnabled) { Serial.println("Frequency Sweep: Started"); }
+
+			number_of_sweep_points = ((stopFrequency - startFrequency) / stepFrequency) + 1;
+
+			if (stopFrequency > 30e6 || startFrequency > 30e6)
+			{
+				// Turn on LMX2 incase present path was LF Path
+				spiWrite_LMX(&LMX2_R0, LMX2_LE);
+				delay(10);
+			}
+
+			sweepIndex = 0;
+			sweepERASynth();
+
+			if (!sweepTriggerMode)
+			{
+				// attaches sweepERASynth() as a timer function called every dwellTime milliseconds:
+				Timer4.attachInterrupt(sweepRoutine).setPeriod(dwellTime * 1000).start();
+			}
+			else
+			{
+				attachInterrupt(Trig_Inp, sweepRoutine, RISING);
+			}
+		}
+	}
+	else if (commandID == 'P')
+	{
+		//Path Selections
+
+		if (commandBuffer[2] == '0')
 		{
 			// First rf status must be set. It is checked in the function below
-			if (String(commandBuffer[3]) != rfOnOff_Str) 
+			if (String(commandBuffer[3]) != rfOnOff_Str)
 			{
 				rfOnOff_Str = String(commandBuffer[3]);
 				setFRAM(_rfOnOff, rfOnOff_Str);
@@ -340,37 +360,37 @@ void command(String commandBuffer)
 			//RF ON-OFF (0=RF OFF; 1=RF ON)  
 			rfOnOff(commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '1') 
+		else if (commandBuffer[2] == '1')
 		{
 			//Reference (0=Int; 1=Ext)
-			digitalWrite(SW1, commandBuffer[3] - 48); 
+			digitalWrite(SW1, commandBuffer[3] - 48);
 
-			if (String(commandBuffer[3]) != referenceIntOrExt_Str) 
+			if (String(commandBuffer[3]) != referenceIntOrExt_Str)
 			{
 				referenceIntOrExt_Str = String(commandBuffer[3]);
 				setFRAM(_referenceIntOrExt, referenceIntOrExt_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Reference Int[0]/Ext[1]: "); Serial.println(referenceIntOrExt_Str); }
 		}
-		else if (commandBuffer[2] == '2') 
+		else if (commandBuffer[2] == '2')
 		{
 			//LMX1 REF path (0=LMX1 Bypassed; 1=LMX1 path is selected)
-			digitalWrite(SW2, commandBuffer[3] - 48); 
+			digitalWrite(SW2, commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '3') 
+		else if (commandBuffer[2] == '3')
 		{
 			//Low Freq Path Select (0=30MHz-6GHz; 1=LF-30MHz)
-			digitalWrite(SW3, commandBuffer[3] - 48); 
+			digitalWrite(SW3, commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '4') 
+		else if (commandBuffer[2] == '4')
 		{
 			//High Freq Path Select (0=LF-6GHz; 1=6GHz-15GHz)
-			digitalWrite(SW4, commandBuffer[3] - 48); 
+			digitalWrite(SW4, commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '5') 
+		else if (commandBuffer[2] == '5')
 		{
 			//TCXO-OCXO select (0=TCXO is ON; OCXO is OFF; 1=OCXO is ON; TCXO is OFF)
-			digitalWrite(TCXO_En, !(commandBuffer[3] - 48)); 
+			digitalWrite(TCXO_En, !(commandBuffer[3] - 48));
 			digitalWrite(OCXO_En, commandBuffer[3] - 48);
 
 			if (String(commandBuffer[3]) != referenceTcxoOrOcxo_Str)
@@ -381,31 +401,31 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.print("Reference Tcxo[0]/Ocxo[1]: "); Serial.println(referenceTcxoOrOcxo_Str); }
 		}
-		else if (commandBuffer[2] == '6') 
+		else if (commandBuffer[2] == '6')
 		{
 			//DC_6GHz Amp. (0=OFF; 1=ON) 
-			digitalWrite(DC_6GHz_En, commandBuffer[3] - 48); 
+			digitalWrite(DC_6GHz_En, commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '7') 
+		else if (commandBuffer[2] == '7')
 		{
 			//6_15GHz Amp. (0=OFF; 1=ON)
-			digitalWrite(X6_15GHz_En, commandBuffer[3] - 48); 
+			digitalWrite(X6_15GHz_En, commandBuffer[3] - 48);
 		}
-		else if (commandBuffer[2] == '8') 
+		else if (commandBuffer[2] == '8')
 		{
-			if (String(commandBuffer[3]) != rememberLastStates_Str) 
+			if (String(commandBuffer[3]) != rememberLastStates_Str)
 			{
 				rememberLastStates_Str = String(commandBuffer[3]);
 				setFRAM(_rememberLastStates, rememberLastStates_Str);
 			}
 			if (isDebugEnabled) { Serial.print("Remember Last States No[0]/Yes[1]: "); Serial.println(rememberLastStates_Str); }
 		}
-		else if (commandBuffer[2] == 'A') 
+		else if (commandBuffer[2] == 'A')
 		{
 			// Low Power Mode (0=OFF; 1=ON)
-			isLowPowerModeActive = commandBuffer[3] - 48; 
+			isLowPowerModeActive = commandBuffer[3] - 48;
 
-			if (String(commandBuffer[3]) != isLowPowerModeActive_Str) 
+			if (String(commandBuffer[3]) != isLowPowerModeActive_Str)
 			{
 				isLowPowerModeActive_Str = String(commandBuffer[3]);
 				setFRAM(_isLowPowerModeActive, isLowPowerModeActive_Str);
@@ -413,16 +433,16 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.print("Low Power Mode Off[0]/On[1]: "); Serial.println(isLowPowerModeActive_Str); }
 		}
-		else if (commandBuffer[2] == 'D') 
+		else if (commandBuffer[2] == 'D')
 		{
 			// Debug Messages (0=OFF; 1=ON)
 			isDebugEnabled = commandBuffer[3] - 48;
 			Serial.print("Debug Messages Dis[0]/Enb[1]: "); Serial.println(String(isDebugEnabled));
 		}
-		else if (commandBuffer[2] == 'M') 
+		else if (commandBuffer[2] == 'M')
 		{
 			// ERASynth Model (0=ERASynth; 1=ERASynth+; 2=ERASynth++)
-			ERASynthModel = commandBuffer[3] - 48; 
+			ERASynthModel = commandBuffer[3] - 48;
 
 			if (String(commandBuffer[3]) != ERASynthModel_Str)
 			{
@@ -433,19 +453,19 @@ void command(String commandBuffer)
 			if (isDebugEnabled) { Serial.print("ERASynth Model: "); Serial.println(ERASynthModel_Str); }
 		}
 		else if (commandBuffer[2] == 'P')
-		{ 
+		{
 			// PRESET
 			if (isDebugEnabled) { Serial.println("PRESET is activated"); }
 			preset_ERASynth();
 		}
 		else if (commandBuffer[2] == 'R')
-		{ 
+		{
 			// Factory RESET
 			if (isDebugEnabled) { Serial.println("Factory Reset is activated"); }
 			facReset();
 		}
 		else if (commandBuffer[2] == 'E')
-		{ 
+		{
 			// ESP8266 Settings
 			for (int i = 4; i <= commandBuffer.length() - 1; i++) { commandInString += (char)commandBuffer[i]; }
 
@@ -461,14 +481,14 @@ void command(String commandBuffer)
 			}
 			else if (commandBuffer[3] == 'W') // WiFi Mode  (0=STA; 1=AP)
 			{
-				if (String(commandBuffer[4]) != wifiMode_Str) 
+				if (String(commandBuffer[4]) != wifiMode_Str)
 				{
 					wifiMode_Str = String(commandBuffer[4]);
 					setFRAM(_wifiMode, wifiMode_Str);
 				}
 
 				if (isDebugEnabled) { Serial.print("WiFi Mode Sta[0]/AP[1]: "); Serial.println(wifiMode_Str); }
-				
+
 				if (wifiMode_Str == "0") { Serial1.println("<W0"); }
 				else if (wifiMode_Str == "1") { Serial1.println("<W1"); }
 			}
@@ -497,10 +517,10 @@ void command(String commandBuffer)
 			else if (commandBuffer[3] == 'P' && commandBuffer[4] == '0') // Station Mode Password
 			{
 				commandInString.remove(0, 1);
-				if (commandInString != staModePassword_Str) 
+				if (commandInString != staModePassword_Str)
 				{
-					staModePassword_Str = commandInString; 
-					setFRAM(_staModePassword, staModePassword_Str); 
+					staModePassword_Str = commandInString;
+					setFRAM(_staModePassword, staModePassword_Str);
 				}
 				if (isDebugEnabled) { Serial.print("Station Mode Password: "); Serial.println(staModePassword_Str); }
 				Serial1.println("<P0" + staModePassword_Str);
@@ -518,7 +538,7 @@ void command(String commandBuffer)
 			}
 			else if (commandBuffer[3] == 'I') // IP Address
 			{
-				if (commandInString != ipAddress_Str) 
+				if (commandInString != ipAddress_Str)
 				{
 					ipAddress_Str = commandInString;
 					setFRAM(_ipAddress, ipAddress_Str);
@@ -528,7 +548,7 @@ void command(String commandBuffer)
 			}
 			else if (commandBuffer[3] == 'G') // Gateway Address
 			{
-				if (commandInString != gatewayAddress_Str) 
+				if (commandInString != gatewayAddress_Str)
 				{
 					gatewayAddress_Str = commandInString;
 					setFRAM(_gatewayAddress, gatewayAddress_Str);
@@ -588,16 +608,15 @@ void command(String commandBuffer)
 			setFreqParam(lastFrequency);
 			setAmplitude();
 		}
-		break;
-
-	case 'M': 
-		
+	}
+	else if (commandID == 'M')
+	{
 		//FM Modulation with default settings
 		if (commandBuffer[2] == '0')
-		{ 
+		{
 			//Modulation Type
 			//0=NBFM_Mod; 1=WBFM_Mod; 2=AM_Mod; 3=Pulse_Mod
-			modType = commandBuffer[3] - 48; 
+			modType = commandBuffer[3] - 48;
 
 			if (String(modType) != modulationType_Str)
 			{
@@ -615,18 +634,18 @@ void command(String commandBuffer)
 				else { Serial.println("Unknown"); }
 			}
 		}
-		else if (commandBuffer[2] == '1') 
-		{ 
+		else if (commandBuffer[2] == '1')
+		{
 			//Modulation Source 0=Internal; 1=External; 2=Microphone
 			modSource = commandBuffer[3] - 48;
 
-			if (String(modSource) != modulationSource_Str) 
+			if (String(modSource) != modulationSource_Str)
 			{
 				modulationSource_Str = String(modSource);
 				setFRAM(_modulationSource, modulationSource_Str);
 			}
 
-			if (isDebugEnabled) 
+			if (isDebugEnabled)
 			{
 				Serial.print("Modulation Source: ");
 				if (modSource == External) { Serial.println("External"); ADC->ADC_CHER = 0x01; } // Enable ADC on pin A7
@@ -634,18 +653,18 @@ void command(String commandBuffer)
 				else if (modSource == Microphone) { Serial.println("Microphone"); ADC->ADC_CHER = 0x02; } // Enable ADC on pin A6
 			}
 		}
-		else if (commandBuffer[2] == '2') 
-		{ 
+		else if (commandBuffer[2] == '2')
+		{
 			//Signal Waveform (0=Sine; 1=Triangle, 2=Ramp, 3=Square)
 			waveformType = commandBuffer[3] - 48;
 
-			if (String(waveformType) != waveformType_Str) 
+			if (String(waveformType) != waveformType_Str)
 			{
 				waveformType_Str = String(waveformType);
 				setFRAM(_waveformType, waveformType_Str);
 			}
 
-			if (isDebugEnabled) 
+			if (isDebugEnabled)
 			{
 				Serial.print("Waveform Type: ");
 				if (waveformType == Sine) { Serial.println("Sine"); }
@@ -655,16 +674,20 @@ void command(String commandBuffer)
 			}
 		}
 		else if (commandBuffer[2] == '3')
-		{ 
+		{
 			//Internal Modulation Frequency (Hz)
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _internalModulationFreq[1]) { Serial.println("Limits exceeded"); break; }
+			if (commandInString.length() > _internalModulationFreq[1]) 
+			{ 
+				Serial.println("Limits exceeded");
+				return;
+			}
 
-			if (commandInString != internalModulationFreq_Str) 
+			if (commandInString != internalModulationFreq_Str)
 			{
 				internalModulationFreq_Str = commandInString;
 				setFRAM(_internalModulationFreq, internalModulationFreq_Str);
@@ -673,14 +696,18 @@ void command(String commandBuffer)
 			if (isDebugEnabled) { Serial.print("Internal Modulation Frequency: "); Serial.print(internalModulationFreq_Str); Serial.println("Hz"); }
 		}
 		else if (commandBuffer[2] == '4')
-		{ 
+		{
 			//FM Deviation Frequency (Hz)
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _fmDeviation[1]) { Serial.println("Limits exceeded"); break; }
+			if (commandInString.length() > _fmDeviation[1]) 
+			{ 
+				Serial.println("Limits exceeded"); 
+				return; 
+			}
 
 			if (commandInString != fmDeviation_Str)
 			{
@@ -691,20 +718,24 @@ void command(String commandBuffer)
 			if (isDebugEnabled) { Serial.print("FM Deviation: "); Serial.print(fmDeviation_Str); Serial.println("Hz"); }
 		}
 		else if (commandBuffer[2] == '5')
-		{ 
+		{
 			//AM Depth (%)
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i]) || commandBuffer[i] == '.') { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _amDepth[1]) { Serial.println("Limits exceeded"); break; }
+			if (commandInString.length() > _amDepth[1]) 
+			{ 
+				Serial.println("Limits exceeded");
+				return;
+			}
 
 			Depth_Value = commandInString.toInt();
 
 			if (Depth_Value > 100) { Depth_Value = 100; }
-			
-			if (String(Depth_Value) != amDepth_Str) 
+
+			if (String(Depth_Value) != amDepth_Str)
 			{
 				amDepth_Str = String(Depth_Value);
 				setFRAM(_amDepth, amDepth_Str);
@@ -713,19 +744,23 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.print("AM Depth: "); Serial.print(amDepth_Str); Serial.println("%"); }
 		}
-		else if (commandBuffer[2] == '6') 
-		{ 
+		else if (commandBuffer[2] == '6')
+		{
 			//Pulse Period (us) 
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _pulsePeriod[1]) { Serial.println("Limits exceeded"); break; }
+			if (commandInString.length() > _pulsePeriod[1]) 
+			{ 
+				Serial.println("Limits exceeded"); 
+				return;
+			}
 
 			if (commandInString.toInt() < 2 * default_delay_in_Pulse_Mod) { commandInString = String(2 * default_delay_in_Pulse_Mod); }
 
-			if (commandInString != pulsePeriod_Str) 
+			if (commandInString != pulsePeriod_Str)
 			{
 				pulsePeriod_Str = commandInString;
 				setFRAM(_pulsePeriod, pulsePeriod_Str);
@@ -733,19 +768,23 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.print("Pulse Period: "); Serial.print(pulsePeriod_Str); Serial.println("us"); }
 		}
-		else if (commandBuffer[2] == '7') 
-		{ 
+		else if (commandBuffer[2] == '7')
+		{
 			//Pulse Width (us)
-			for (int i = 3; i <= commandBuffer.length() - 1; i++) 
+			for (int i = 3; i <= commandBuffer.length() - 1; i++)
 			{
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _pulseWidth[1]) { Serial.println("Limits exceeded"); break; }
+			if (commandInString.length() > _pulseWidth[1])
+			{ 
+				Serial.println("Limits exceeded");
+				return;
+			}
 
 			if (commandInString.toInt() < default_delay_in_Pulse_Mod) { commandInString = String(default_delay_in_Pulse_Mod); }
 
-			if (commandInString != pulseWidth_Str) 
+			if (commandInString != pulseWidth_Str)
 			{
 				pulseWidth_Str = commandInString;
 				setFRAM(_pulseWidth, pulseWidth_Str);
@@ -753,10 +792,10 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.print("Pulse Width: "); Serial.print(pulseWidth_Str); Serial.println("us"); }
 		}
-		else if (commandBuffer[2] == 'S') 
-		{ 
+		else if (commandBuffer[2] == 'S')
+		{
 			//Modulation Start-Stop (0=Stop; 1=Start)
-			if (String(commandBuffer[3]) != modulationOnOff_Str) 
+			if (String(commandBuffer[3]) != modulationOnOff_Str)
 			{
 				modulationOnOff_Str = String(commandBuffer[3]);
 				setFRAM(_modulationOnOff, modulationOnOff_Str);
@@ -768,77 +807,78 @@ void command(String commandBuffer)
 				is_modulation_paused = false;
 				stopAllMod();
 
-				switch (modType) 
+				switch (modType)
 				{
-					case NBFM_Mod:
-						digitalWrite(NB_FM_En, HIGH); //NB_FM Enabled.
-						nbFmMod();
-						break;
-					case WBFM_Mod:
-						delay(1); // it is required when changing the frequency while modulation is ON
-						spiWrite_LMX(&WBFM_LMX2_R12, LMX2_LE);
-						spiWrite_LMX(&WBFM_LMX2_R11, LMX2_LE);
-						spiWrite_LMX(&WBFM_LMX2_R34_update, LMX2_LE);
-						spiWrite_LMX(&WBFM_LMX2_R36_update, LMX2_LE);
-						spiWrite_LMX(&WBFM_LMX2_R14, LMX2_LE);
-						digitalWrite(WB_FM_En, HIGH); //WB_FM Enabled.
-						wbFmMod();
-						break;
-					case AM_Mod:
-						amMod();
-						break;
-					case Pulse_Mod:
-						isPulseActive = true;
-						
-						break;
+				case NBFM_Mod:
+					digitalWrite(NB_FM_En, HIGH); //NB_FM Enabled.
+					nbFmMod();
+					break;
+				case WBFM_Mod:
+					delay(1); // it is required when changing the frequency while modulation is ON
+					spiWrite_LMX(&WBFM_LMX2_R12, LMX2_LE);
+					spiWrite_LMX(&WBFM_LMX2_R11, LMX2_LE);
+					spiWrite_LMX(&WBFM_LMX2_R34_update, LMX2_LE);
+					spiWrite_LMX(&WBFM_LMX2_R36_update, LMX2_LE);
+					spiWrite_LMX(&WBFM_LMX2_R14, LMX2_LE);
+					digitalWrite(WB_FM_En, HIGH); //WB_FM Enabled.
+					wbFmMod();
+					break;
+				case AM_Mod:
+					amMod();
+					break;
+				case Pulse_Mod:
+					isPulseActive = true;
+
+					break;
 				}
 				delay(10); // it is required while serial activity
 				return;
 			}
-			else if (commandBuffer[3] == '0') 
+			else if (commandBuffer[3] == '0')
 			{
 				is_modulation_stopped = true;
 				switch (modType)
 				{
-					case NBFM_Mod:
-						
-						digitalWrite(NB_FM_En, LOW); //NB_FM Disabled. Normal Operation
-						if (isDebugEnabled) { Serial.println("NBFM Modulation: Stopped"); }
-						break;
+				case NBFM_Mod:
 
-					case WBFM_Mod:
-						
-						digitalWrite(WB_FM_En, LOW); //WB_FM Disabled. Normal Operation
-						spiWrite_LMX(&LMX2_register[112 - 12], LMX2_LE);
-						spiWrite_LMX(&LMX2_register[112 - 11], LMX2_LE);
-						spiWrite_LMX(&LMX2_register[112 - 34], LMX2_LE);
-						spiWrite_LMX(&LMX2_R36_update, LMX2_LE);
-						spiWrite_LMX(&LMX2_register[112 - 14], LMX2_LE);
-						rfOnOff(rfOnOff_Str.toInt());
-						if (isDebugEnabled) { Serial.println("WBFM Modulation: Stopped"); }
-						break;
+					digitalWrite(NB_FM_En, LOW); //NB_FM Disabled. Normal Operation
+					if (isDebugEnabled) { Serial.println("NBFM Modulation: Stopped"); }
+					break;
 
-					case AM_Mod:
-						
-						if (isDebugEnabled) { Serial.println("AM Modulation: Stopped"); }
-						setAmplitude(); //restore the right amplitude value after AM modulation
-						break;
+				case WBFM_Mod:
 
-					case Pulse_Mod:
-						
-						if (isDebugEnabled) { Serial.println("Pulse Modulation: Stopped"); }
-						detachInterrupt(Trig_Inp);
-						Timer2.stop();
-						isPulseActive = false;
-						rfOnOff(rfOnOff_Str.toInt());
-						break;
+					digitalWrite(WB_FM_En, LOW); //WB_FM Disabled. Normal Operation
+					spiWrite_LMX(&LMX2_register[112 - 12], LMX2_LE);
+					spiWrite_LMX(&LMX2_register[112 - 11], LMX2_LE);
+					spiWrite_LMX(&LMX2_register[112 - 34], LMX2_LE);
+					spiWrite_LMX(&LMX2_R36_update, LMX2_LE);
+					spiWrite_LMX(&LMX2_register[112 - 14], LMX2_LE);
+					rfOnOff(rfOnOff_Str.toInt());
+					if (isDebugEnabled) { Serial.println("WBFM Modulation: Stopped"); }
+					break;
+
+				case AM_Mod:
+
+					if (isDebugEnabled) { Serial.println("AM Modulation: Stopped"); }
+					setAmplitude(); //restore the right amplitude value after AM modulation
+					break;
+
+				case Pulse_Mod:
+
+					if (isDebugEnabled) { Serial.println("Pulse Modulation: Stopped"); }
+					detachInterrupt(Trig_Inp);
+					Timer2.stop();
+					isPulseActive = false;
+					rfOnOff(rfOnOff_Str.toInt());
+					break;
 				}
 			}
 		}
-		break;
+	}
+	else if (commandID == 'R')
+	{
+		//READ BACK
 
-	case 'R': //READ BACK
-		
 		if (commandBuffer[2] == 'A') //Read All
 		{
 			String vals[29][2];
@@ -937,7 +977,7 @@ void command(String commandBuffer)
 		}
 		else if (commandBuffer[2] == 'D') //Read Diagnostic
 		{
-			if (is_modulation_stopped || (!is_modulation_stopped && modType == Pulse_Mod)) 
+			if (is_modulation_stopped || (!is_modulation_stopped && modType == Pulse_Mod))
 			{
 				delay(10);
 				RSSI_Str = Serial1.readString();
@@ -994,54 +1034,54 @@ void command(String commandBuffer)
 			Serial1.print(read);
 			Serial.println(read);
 		}
-		else if (commandBuffer[2] == 'C') 
-		{	
+		else if (commandBuffer[2] == 'C')
+		{
 			//Analog Readings current
 			ADC->ADC_CHER = 0x80;					// Enable ADC on pin A0
 			while ((ADC->ADC_ISR & 0x80) == 0x00);  // Wait for conversion on A0 pin
 			cur = ADC->ADC_CDR[7];
 			Serial.println(String(((cur * 3.25) / 4096) / 1.5, 2));
 		}
-		else if (commandBuffer[2] == 'V') 
-		{			
+		else if (commandBuffer[2] == 'V')
+		{
 			//Analog Readings voltage
 			ADC->ADC_CHER = 0x40;					// Enable ADC on pin A1
 			while ((ADC->ADC_ISR & 0x40) == 0x00);  // Wait for conversion on A1 pin
 			volt = ADC->ADC_CDR[6];
 			Serial.println(String((volt * 3.25) / 4096 * 5.02, 2));
 		}
-		else if (commandBuffer[2] == '0') 
+		else if (commandBuffer[2] == '0')
 		{
 			//Reference Lock Status
 			Serial.println(String(digitalRead(ADF4002_LD)));
 		}
-		else if (commandBuffer[2] == '1') 
+		else if (commandBuffer[2] == '1')
 		{
 			//LMX1 Lock Status
 			Serial.println(String(digitalRead(LMX1_MUXOUT)));
 		}
-		else if (commandBuffer[2] == '2') 
+		else if (commandBuffer[2] == '2')
 		{
 			//LMX2 Lock Status
 			Serial.println(String(digitalRead(LMX2_MUXOUT)));
 		}
-		else if (commandBuffer[2] == 'R') 
+		else if (commandBuffer[2] == 'R')
 		{
 			//Read RSSI from ESP8266
 			Serial1.println("<R");
 		}
-		else if (commandBuffer[2] == 'T') 
+		else if (commandBuffer[2] == 'T')
 		{
 			//Temperature Reading
 			Serial.println(tempRead());
 		}
-		else if (commandBuffer[2] == 'E') 
+		else if (commandBuffer[2] == 'E')
 		{
 			//Read Embedded Version
-			Serial1.println(embeddedVersion_Str); 
+			Serial1.println(embeddedVersion_Str);
 			Serial.println(embeddedVersion_Str);
 		}
-		else if (commandBuffer[2] == '8') 
+		else if (commandBuffer[2] == '8')
 		{
 			//Read ESP8266 Embedded Version
 			Serial1.println("<E");
@@ -1051,22 +1091,21 @@ void command(String commandBuffer)
 			//Read Serial Number 
 			Serial.println(serialNumber_Str);
 		}
-		else if (commandBuffer[2] == 'M') 
+		else if (commandBuffer[2] == 'M')
 		{
 			//Read ERASynth Model
 			if (ERASynthModel_Str == "0") { Serial.println("ERASynth"); }
 			else if (ERASynthModel_Str == "1") { Serial.println("ERASynth+"); }
 			else if (ERASynthModel_Str == "2") { Serial.println("ERASynth++"); }
 		}
-		else if (commandBuffer[2] == 'W') 
+		else if (commandBuffer[2] == 'W')
 		{
 			//Read ESP8266 ON/OFF (0=OFF; 1=ON) 
 			Serial.println(esp8266OnOff_Str);
 		}
-		break;
-
-	case 'U': 
-		
+	}
+	else if (commandID == 'U')
+	{
 		//ESP8266 UART (UploadCode) Mode will be activated      
 		isUploadCodeModeActive = true;
 		digitalWrite(Wi_Fi_Flash, LOW);//UART (UploadCode)
@@ -1082,16 +1121,16 @@ void command(String commandBuffer)
 
 		stopAllMod(); //Turn off Modulations
 		rfOnOff(0); //Turn off ERASynth
-		break;
-
-	case 'X': 
-
-		if (commandBuffer[2] == 'I') 
+		return;
+	}
+	else if (commandID == 'X')
+	{
+		if (commandBuffer[2] == 'I')
 		{
 			isInitESP8266Done = true;
 			Serial.println("ESP is initiated...");
 		}
-		else 
+		else
 		{
 			//ESP8266 Reset will be activated
 			digitalWrite(Wi_Fi_RST, LOW);
@@ -1101,9 +1140,5 @@ void command(String commandBuffer)
 			Serial1.println("<A");
 			Serial.println("ESP8266 RESET is done!");
 		}
-		
-		break;
-
-	default:;
 	}
 }
