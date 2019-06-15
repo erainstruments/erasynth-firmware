@@ -129,7 +129,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.12";
+String embeddedVersion_Str = "v1.0.13";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";
@@ -379,7 +379,7 @@ void setup()
 	else if (ERASynth == 2) { Serial.println("ERASynth++"); BandPoint = 4500e6; }
 
 	serialNumber_Str = getFRAM(_serialNumber);
-
+	
 	Serial.print("Serial Number: ");
 	Serial.println(serialNumber_Str);
 

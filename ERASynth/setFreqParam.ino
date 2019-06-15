@@ -96,13 +96,11 @@ void setFreqParam(uint64_t freq)
 		uint32_t R39 = 0x270000 | (uint16_t)(f_pd);
 		uint32_t R38 = 0x260000 | (f_pd >> 16);
 
-		uint64_t freq_vco = ODIV * freq;
+		uint64_t freq_vco = (uint64_t)ODIV * freq;
 
-		float Nlmx = (float)freq_vco / (float)f_pd;
-		uint32_t Nlmx_int = floor(Nlmx);
-		uint32_t R36 = Nlmx_int + 2359296;
-
-		uint32_t pll_num = (uint32_t)(freq_vco - (uint64_t)(Nlmx_int * f_pd));
+		uint64_t Nlmx_int = freq_vco / 200000000;
+		uint32_t R36 = (uint32_t)Nlmx_int + 2359296;
+		uint64_t pll_num = freq_vco % 200000000;
 
 		uint32_t R42 = 0x2A0000 | (pll_num >> 16);
 		uint32_t R43 = 0x2B0000 | (pll_num & (0x00FFFF));
