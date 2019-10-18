@@ -16,7 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define ERASynth 1
+
+#define ERASynth 2
+// Make DEBUG = 1 to write faster when debugging. This will avoid amplitude calibration files to written in flash therefore ouput power is going to be maximum.
+#define DEBUG 0
 #define max_DAC_Value 4095
 #define min_DAC_Value 0
 #define LMX1_LE 10
@@ -127,72 +130,41 @@ uint8_t _freqSize = 11;
 
 // First row is address, second row is size
 uint16_t _ERASynthModel[]			= { 0, 1 };
-
 uint16_t _serialNumber[]			= { _ERASynthModel[0] + _ERASynthModel[1] , 4 };
-
+uint16_t _firmware[]				= { _serialNumber[0] + _serialNumber[1] , 32 };
 uint16_t _frequency[]				= { address_start, _freqSize };
-
 uint16_t _amplitude[]				= { _frequency[0] + _frequency[1], 6 };
-
 uint16_t _startFrequency[]			= { _amplitude[0] + _amplitude[1], _freqSize };
-
 uint16_t _stopFrequency[]			= { _startFrequency[0] + _startFrequency[1], _freqSize };
-
 uint16_t _stepFrequency[]			= { _stopFrequency[0] + _stopFrequency[1], _freqSize };
-
 uint16_t _dwellTime[]				= { _stepFrequency[0] + _stepFrequency[1], 5 };
-
 uint16_t _rfOnOff[]					= { _dwellTime[0] + _dwellTime[1], 1 };
-
 uint16_t _esp8266OnOff[]			= { _rfOnOff[0] + _rfOnOff[1] , 1 };
-
 uint16_t _isLowPowerModeActive[]	= { _esp8266OnOff[0] + _esp8266OnOff[1] ,1 };
-
 uint16_t _referenceIntOrExt[]		= { _isLowPowerModeActive[0] + _isLowPowerModeActive[1],1 };
-
 uint16_t _referenceTcxoOrOcxo[]		= { _referenceIntOrExt[0] + _referenceIntOrExt[1] ,1 };
-
 uint16_t _modulationType[]			= { _referenceTcxoOrOcxo[0] + _referenceTcxoOrOcxo[1],1 };
-
 uint16_t _modulationSource[]		= { _modulationType[0] + _modulationType[1],1 };
-
 uint16_t _internalModulationFreq[]	= { _modulationSource[0] + _modulationSource[1],5 };
-
 uint16_t _fmDeviation[]				= { _internalModulationFreq[0] + _internalModulationFreq[1],7 };
-
 uint16_t _amDepth[]					= { _fmDeviation[0] + _fmDeviation[1],3 };
-
 uint16_t _modulationOnOff[]			= { _amDepth[0] + _amDepth[1],1 };
-
 uint16_t _rememberLastStates[]		= { _modulationOnOff[0] + _modulationOnOff[1],1 };
-
 uint16_t _isUploadCodeModeActive[]	= { _rememberLastStates[0] + _rememberLastStates[1],1 };
-
 uint16_t _sweepTriggerMode[]		= { _isUploadCodeModeActive[0] + _isUploadCodeModeActive[1],1 };
-
 uint16_t _sweepOnOff[]				= { _sweepTriggerMode[0] + _sweepTriggerMode[1],1 };
-
 uint16_t _wifiMode[]				= { _sweepOnOff[0] + _sweepOnOff[1],1 };
-
 uint16_t _pulsePeriod[]				= { _wifiMode[0] + _wifiMode[1],9 };
-
 uint16_t _pulseWidth[]				= { _pulsePeriod[0] + _pulsePeriod[1],9 };
-
 uint16_t _waveformType[]			= { _pulseWidth[0] + _pulseWidth[1],1 };
-
 uint16_t _staModeSSID[]				= { _waveformType[0] + _waveformType[1],32 };
-
 uint16_t _apModeSSID[]				= { _staModeSSID[0] + _staModeSSID[1],32 };
-
 uint16_t _staModePassword[]			= { _apModeSSID[0] + _apModeSSID[1],64};
-
 uint16_t _apModePassword[]			= { _staModePassword[0] + _staModePassword[1],64};
-
 uint16_t _ipAddress[]				= { _apModePassword[0] + _apModePassword[1],15 };
-
 uint16_t _gatewayAddress[]			= { _ipAddress[0] + _ipAddress[1],15 };
-
 uint16_t _subnetAddress[]			= { _gatewayAddress[0] + _gatewayAddress[1],15 };
+uint16_t _phaseNoise[]				= { _subnetAddress[0] + _subnetAddress[1], 1 };
 
 uint8_t init_DDS_CFR1[5]		= {0x00, 0x00, 0x08, 0x00, 0x00};
 uint8_t init_DDS_CFR2[3]		= {0x01, 0x14, 0x20};

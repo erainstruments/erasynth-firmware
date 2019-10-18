@@ -19,38 +19,35 @@
 void serverInit()
 {
 	server.on("/", HTTP_POST, handleCommand);
-											  
-	server.on("/edit", HTTP_GET, []() { if (!handleFileRead("/edit.htm")) server.send(404, "text/plain", "FileNotFound"); });
-	
+
 	// Called when the url is not defined here
 	// Use it to load content from SPIFFS
 	server.onNotFound([]() { if (!handleFileRead(server.uri())) { server.send(404, "text/plain", "FileNotFound"); } });
 	
 	// Start the server
 	server.begin();
-	DBG_OUTPUT_PORT.println("HTTP server started");
 }
 
 void serialEvent()
 {
-	char rx_byte = 0;
-	while (Serial.available() > 0) 
-	{
-		rx_byte = Serial.read();
+    char rx_byte = 0;
+  while (Serial.available() > 0) 
+  {
+    rx_byte = Serial.read();
 
-		if (rx_byte == '<' || isCmdExist) 
-		{
-			isCmdExist = true;
-			if (rx_byte != '\r') cmdString += rx_byte;
-		}
-		
-		if (rx_byte == '\r' && isCmdExist) 
-		{
-			command(cmdString);
-			cmdString = "";
-			isCmdExist = false;
-		}
-	}
+    if (rx_byte == '<' || isCmdExist) 
+    {
+      isCmdExist = true;
+      if (rx_byte != '\r') cmdString += rx_byte;
+    }
+    
+    if (rx_byte == '\r' && isCmdExist) 
+    {
+      command(cmdString);
+      cmdString = "";
+      isCmdExist = false;
+    }
+  }
 }
 
 
@@ -61,7 +58,7 @@ bool findSSID()
 	
 	if (numberOfNetworks == 0)
 	{
-		Serial.println("No Networks Found");
+		debugPrintln("No Networks Found");
 	}
 	else
 	{
@@ -72,7 +69,7 @@ bool findSSID()
 
 bool handleFileRead(String path) 
 {
-	DBG_OUTPUT_PORT.println("handleFileRead: " + path);
+	debugPrintln("handleFileRead: " + path);
 	if (path.endsWith("/")) { path += "index.html"; }
 
 	String contentType = getContentType(path);
@@ -83,10 +80,10 @@ bool handleFileRead(String path)
 		if (SPIFFS.exists(pathWithGz)) { path += ".gz"; }
 			
 		File file = SPIFFS.open(path, "r");
-		DBG_OUTPUT_PORT.println("!!!Stream has started: " + path);
+		debugPrintln("!!!Stream has started: " + path);
 		size_t sent = server.streamFile(file, contentType);
 		file.close();
-		DBG_OUTPUT_PORT.println("!!!Stream has Finished!!!");
+		debugPrintln("!!!Stream has Finished!!!");
 		return true;
 	}
 	return false;
@@ -97,7 +94,7 @@ void handleFileList()
 	if (!server.hasArg("dir")) { server.send(500, "text/plain", "BAD ARGS"); return; }
 
 	String path = server.arg("dir");
-	DBG_OUTPUT_PORT.println("handleFileList: " + path);
+	debugPrintln("handleFileList: " + path);
 	Dir dir = SPIFFS.openDir(path);
 	path = String();
 
@@ -135,4 +132,23 @@ String getContentType(String filename)
 	else if (filename.endsWith(".zip")) return "application/x-zip";
 	else if (filename.endsWith(".gz")) return "application/x-gzip";
 	return "text/plain";
+}
+
+String formatBytes(size_t bytes)
+{
+  // Format bytes
+  if (bytes < 1024) { return String(bytes) + "B"; }
+  else if (bytes < (1024 * 1024)) { return String(bytes / 1024.0) + "KB"; }
+  else if (bytes < (1024 * 1024 * 1024)) { return String(bytes / 1024.0 / 1024.0) + "MB"; }
+  else { return String(bytes / 1024.0 / 1024.0 / 1024.0) + "GB"; }
+}
+
+void debugPrint(String input)
+{
+  if(isInitiated){ Serial.print(input); }
+}
+
+void debugPrintln(String input)
+{
+  if(isInitiated){ Serial.println(input); }
 }

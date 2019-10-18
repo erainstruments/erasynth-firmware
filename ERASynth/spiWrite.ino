@@ -64,6 +64,57 @@ void soft_spiWrite_DAC0(byte *array, int array_size)
 }
 
 //Soft LE SPI (Any Pin) Function for AD5621 It uses MODE1
+void soft_spiWrite_DAC1(byte *array, int array_size)
+{
+	REG_PIOC_ODSR &= ~(1 << 18); //Low PC18 (pin45)
+	SPI.transfer(array, array_size);
+	REG_PIOC_ODSR |= 1 << 18; //High PC18 (Pin45) 
+}
+
+//Soft LE SPI (Any Pin) Function for AD5621 It uses MODE1
+void soft_spiWrite_DAC1(uint16_t input)
+{
+	if (input < 0) { input = 0; }
+	else if (input > 4095) { input = 4095; }
+
+	byte DAC[2] = { 0 };
+
+	input = input << 2;
+
+	DAC[1] = (byte)input; //LSB of DAC_Value
+	DAC[0] = (byte)(input >> 8); //MSB of DAC_Value
+
+	REG_PIOC_ODSR &= ~(1 << 18); //Low PC18 (pin45)
+	SPI.transfer(DAC, 2);
+	REG_PIOC_ODSR |= 1 << 18; //High PC18 (Pin45) 
+}
+
+//Soft LE SPI (Any Pin) Function for AD5621 It uses MODE1
+void soft_spiWrite_DAC2(byte *array, int array_size)
+{
+	REG_PIOA_ODSR &= ~(1 << 19); //Low PA19 (pin42)
+	SPI.transfer(array, array_size);
+	REG_PIOA_ODSR |= 1 << 19; //High PA19 (Pin42) 
+}
+
+void soft_spiWrite_DAC2(uint16_t input)
+{
+	if (input < 0) { input = 0; }
+	else if (input > 4095) { input = 4095; }
+
+	byte DAC[2] = { 0 };
+
+	input = input << 2;
+
+	DAC[1] = (byte)input; //LSB of DAC_Value
+	DAC[0] = (byte)(input >> 8); //MSB of DAC_Value
+
+	REG_PIOA_ODSR &= ~(1 << 19); //Low PA19 (pin42)
+	SPI.transfer(DAC, 2);
+	REG_PIOA_ODSR |= 1 << 19; //High PA19 (Pin42) 
+}
+
+//Soft LE SPI (Any Pin) Function for AD5621 It uses MODE1
 void soft_spiWrite_DAC4(byte *array, int array_size)
 {
 	REG_PIOB_ODSR &= ~(1 << 14); //Low PB14 (pin53)
@@ -76,6 +127,23 @@ void soft_spiWrite_DAC3(byte *array, int array_size)
 {
 	REG_PIOC_ODSR &= ~(1 << 7); //Low PC7 (pin39)
 	SPI.transfer(array, array_size);
+	REG_PIOC_ODSR |= 1 << 7; //High PC7 (Pin39) 
+}
+
+void soft_spiWrite_DAC3(uint16_t input)
+{
+	if (input < 0) { input = 0; }
+	else if (input > 4095) { input = 4095; }
+
+	byte DAC[2] = { 0 };
+
+	input = input << 2;
+
+	DAC[1] = (byte)input; //LSB of DAC_Value
+	DAC[0] = (byte)(input >> 8); //MSB of DAC_Value
+
+	REG_PIOC_ODSR &= ~(1 << 7); //Low PC7 (pin39)
+	SPI.transfer(DAC, 2);
 	REG_PIOC_ODSR |= 1 << 7; //High PC7 (Pin39) 
 }
 

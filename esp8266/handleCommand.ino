@@ -27,202 +27,212 @@ void handleCommand()
 
 	if (server.arg("amplitude") != "") 
 	{
-		Serial.println(">A" + server.arg("amplitude"));
+		debugPrintln(">A" + server.arg("amplitude"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("frequency") != "") 
 	{
-		Serial.println(">F" + server.arg("frequency"));
+		debugPrintln(">F" + server.arg("frequency"));
 		server.send(200, "text/plain", "");
 	}
+  else if (server.arg("phase_shift") != "") 
+  {
+    debugPrintln(">PS" + server.arg("phase_shift"));
+    server.send(200, "text/plain", "");
+  }
 	else if (server.arg("rfoutput") != "") 
 	{
-		Serial.println(">P0" + server.arg("rfoutput"));
+		debugPrintln(">P0" + server.arg("rfoutput"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_type") != "") 
 	{
-		Serial.println(">M0" + server.arg("modulation_type"));
+		debugPrintln(">M0" + server.arg("modulation_type"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_source") != "") 
 	{
-		Serial.println(">M1" + server.arg("modulation_source"));
+		debugPrintln(">M1" + server.arg("modulation_source"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_signal_waveform") != "") 
 	{
-		Serial.println(">M2" + server.arg("modulation_signal_waveform"));
+		debugPrintln(">M2" + server.arg("modulation_signal_waveform"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_freq") != "") 
 	{
-		Serial.println(">M3" + server.arg("modulation_freq"));
+		debugPrintln(">M3" + server.arg("modulation_freq"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_fm_deviation") != "") 
 	{
-		Serial.println(">M4" + server.arg("modulation_fm_deviation"));
+		debugPrintln(">M4" + server.arg("modulation_fm_deviation"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_am_depth") != "") 
 	{
-		Serial.println(">M5" + server.arg("modulation_am_depth"));
+		debugPrintln(">M5" + server.arg("modulation_am_depth"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_pulse_period") != "") 
 	{
-		Serial.println(">M6" + server.arg("modulation_pulse_period"));
+		debugPrintln(">M6" + server.arg("modulation_pulse_period"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_pulse_width") != "") 
 	{
-		Serial.println(">M7" + server.arg("modulation_pulse_width"));
+		debugPrintln(">M7" + server.arg("modulation_pulse_width"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("modulation_on_off") != "")
 	{
-		Serial.println(">MS" + server.arg("modulation_on_off"));
+		debugPrintln(">MS" + server.arg("modulation_on_off"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_start_stop") != "") 
 	{
-		Serial.println(">SS" + server.arg("sweep_start_stop"));
+		debugPrintln(">SS" + server.arg("sweep_start_stop"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_start") != "") 
 	{
-		Serial.println(">S1" + server.arg("sweep_start"));
+		debugPrintln(">S1" + server.arg("sweep_start"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_stop") != "") 
 	{
-		Serial.println(">S2" + server.arg("sweep_stop"));
+		debugPrintln(">S2" + server.arg("sweep_stop"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_step") != "") {
-		Serial.println(">S3" + server.arg("sweep_step"));
+		debugPrintln(">S3" + server.arg("sweep_step"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_dwell") != "") 
 	{
-		Serial.println(">S4" + server.arg("sweep_dwell"));
+		debugPrintln(">S4" + server.arg("sweep_dwell"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("sweep_trigger") != "") 
 	{
-		Serial.println(">S0" + server.arg("sweep_trigger"));
+		debugPrintln(">S0" + server.arg("sweep_trigger"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("reference_int_ext") != "") 
 	{
-		Serial.println(">P1" + server.arg("reference_int_ext"));
+		debugPrintln(">P1" + server.arg("reference_int_ext"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("reference_tcxo_ocxo") != "")
 	{
-		Serial.println(">P5" + server.arg("reference_tcxo_ocxo"));
+		debugPrintln(">P5" + server.arg("reference_tcxo_ocxo"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_mode") != "")
 	{
-		Serial.println(">PEW" + server.arg("wifi_mode"));
+		debugPrintln(">PEW" + server.arg("wifi_mode"));
+		server.send(200, "text/plain", "");
+	}
+	else if (server.arg("phase_noise_mode") != "")
+	{
+		debugPrintln(">P9" + server.arg("phase_noise_mode"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_sta_ssid") != "") 
 	{
-		Serial.println(">PES0" + server.arg("wifi_sta_ssid"));
+		debugPrintln(">PES0" + server.arg("wifi_sta_ssid"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_sta_password") != "") 
 	{
-		Serial.println(">PEP0" + server.arg("wifi_sta_password"));
+		debugPrintln(">PEP0" + server.arg("wifi_sta_password"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_ap_ssid") != "") 
 	{
-		Serial.println(">PES1" + server.arg("wifi_ap_ssid"));
+		debugPrintln(">PES1" + server.arg("wifi_ap_ssid"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_ap_password") != "") 
 	{
-		Serial.println(">PEP1" + server.arg("wifi_ap_password"));
+		debugPrintln(">PEP1" + server.arg("wifi_ap_password"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_ip_address") != "") 
 	{
-		Serial.println(">PEI" + server.arg("wifi_ip_address"));
+		debugPrintln(">PEI" + server.arg("wifi_ip_address"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_gateway_address") != "") 
 	{
-		Serial.println(">PEG" + server.arg("wifi_gateway_address"));
+		debugPrintln(">PEG" + server.arg("wifi_gateway_address"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("wifi_subnet_address") != "") 
 	{
-		Serial.println(">PEN" + server.arg("wifi_subnet_address"));
+		debugPrintln(">PEN" + server.arg("wifi_subnet_address"));
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("preset") != "")
 	{
-		Serial.println(">PP");
+		debugPrintln(">PP");
 		server.send(200, "text/plain", "");
 	}
 	else if (server.arg("readAll") != "") 
 	{
-		Serial.println(">RA");
+		debugPrintln(">RA");
 		readBackAll_Str = Serial.readString();
 		server.send(200, "application/json", readBackAll_Str);
 	}
 	else if (server.arg("readDiagnostic") != "") 
 	{
 		RSSI_Str = WiFi.RSSI();
-		Serial.println(">RD");
+		debugPrintln(">RD");
 		delay(15);
-		Serial.print(RSSI_Str);
+		debugPrint(RSSI_Str);
 		readBackDiagnostic_Str = Serial.readString();
 		server.send(200, "application/json", readBackDiagnostic_Str);
 	}
 	else if (server.arg("readTemperature") != "") 
 	{
-		Serial.println(">RT");
+		debugPrintln(">RT");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readLockLMX2") != "") 
 	{
-		Serial.println(">R2");
+		debugPrintln(">R2");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readLockLMX1") != "") 
 	{
-		Serial.println(">R1");
+		debugPrintln(">R1");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readLockXtal") != "")
 	{
-		Serial.println(">R0");
+		debugPrintln(">R0");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readCurrent") != "") 
 	{
-		Serial.println(">RC");
+		debugPrintln(">RC");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readVoltage") != "")
 	{
-		Serial.println(">RV");
+		debugPrintln(">RV");
 		server.send(200, "text/plain", Serial.readString());
 	}
 	else if (server.arg("readRSSI") != "") 
 	{
 		RSSI_Str = WiFi.RSSI();
-		Serial.println(RSSI_Str);
+		debugPrintln(RSSI_Str);
 		server.send(200, "text/plain", RSSI_Str);
 	}
 	else if (server.arg("readEmbeddedVersion") != "") 
 	{
-		Serial.println(">RE");
+		debugPrintln(">RE");
 		server.send(200, "text/plain", Serial.readString());
 	}
 }

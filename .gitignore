@@ -7,3 +7,12 @@
 /.vs/slnx.sqlite
 /.vs/erasynth-firmware/v15/.suo
 /.vs/config
+/.vs/erasynth-firmware/v15
+/ERASynth/.vs
+/ERASynth/__vm
+/ERASynth/CppProperties.json
+/ERASynth/ERASynth.vcxproj
+/ERASynth/ERASynth.vcxproj.filters
+/ERASynth/ERASynth.vcxproj.user
+/esp8266/.vs
+/esp8266/CppProperties.json

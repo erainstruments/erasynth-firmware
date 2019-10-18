@@ -26,8 +26,8 @@ void command(String commandBuffer)
 
 	switch (commandID) 
 	{
-	case 'E': DBG_OUTPUT_PORT.println(ESP8266FirmwareVersion_Str); break; //ESP8266 Firmware Version Read
-	case 'R': DBG_OUTPUT_PORT.println(WiFi.RSSI()); break; //RSSI Read
+	case 'E': debugPrintln(ESP8266FirmwareVersion_Str); break; //ESP8266 Firmware Version Read
+	case 'R': debugPrintln(String(WiFi.RSSI())); break; //RSSI Read
 	case 'S': 
 
 		//Change SSID
@@ -105,108 +105,18 @@ void command(String commandBuffer)
 	case 'W': 
 		
 		//Wifi Mode
-		if (commandBuffer[2] == '0') 
-		{
-			// Mode=Station
-			WiFi.setOutputPower(20.5); // max: +20.5dBm min: 0dBm 
-			WiFi.disconnect();
-			WiFi.softAPdisconnect();
-			WiFi.mode(WIFI_STA);
-
-			STA_ssid.toCharArray(ssid, STA_ssid.length() + 1);
-			STA_password.toCharArray(password, STA_password.length() + 1);
-
-			DBG_OUTPUT_PORT.print("SSID: ");
-			DBG_OUTPUT_PORT.println(ssid);
-			DBG_OUTPUT_PORT.print("Password: ");
-			DBG_OUTPUT_PORT.println(password);
-			DBG_OUTPUT_PORT.print("IP: ");
-			DBG_OUTPUT_PORT.println(ip);
-			DBG_OUTPUT_PORT.print("Gateway: ");
-			DBG_OUTPUT_PORT.println(gateway);
-			DBG_OUTPUT_PORT.print("Subnet: ");
-			DBG_OUTPUT_PORT.println(subnet);
-
-			WiFi.config(ip, gateway, subnet);
-
-			Serial.println("Network scan initiated");
-			Serial.println("-----------------------");
-			if (findSSID())
-			{
-				DBG_OUTPUT_PORT.printf("Connecting to %s\n", ssid);
-				if (String(WiFi.SSID()) != String(ssid)) 
-				{
-					WiFi.begin(ssid, password);
-				}
-				
-				WiFi.mode(WIFI_STA);
-				while (WiFi.status() != WL_CONNECTED) 
-				{
-					delay(500);
-					DBG_OUTPUT_PORT.print(".");
-					if (++counter > 50)
-					{
-						DBG_OUTPUT_PORT.print(ssid);
-						DBG_OUTPUT_PORT.print(" is available but ");
-						DBG_OUTPUT_PORT.println("password may be wrong");
-						DBG_OUTPUT_PORT.println("Switched to AP mode");
-						command("<W1");
-						return;
-					}
-				}
-				
-				delay(100);
-				DBG_OUTPUT_PORT.println("");
-				DBG_OUTPUT_PORT.print("Connected! IP address: ");
-				DBG_OUTPUT_PORT.println(WiFi.localIP());
-				DBG_OUTPUT_PORT.print("Server MAC address: ");
-				DBG_OUTPUT_PORT.println(WiFi.macAddress());
-				DBG_OUTPUT_PORT.print("Signal strength (RSSI): ");
-				DBG_OUTPUT_PORT.print(WiFi.RSSI());
-				DBG_OUTPUT_PORT.println(" dBm");
-				serverInit();
-			}
-			else
-			{
-				DBG_OUTPUT_PORT.print(ssid);
-				DBG_OUTPUT_PORT.println(" is not available");
-				DBG_OUTPUT_PORT.println("Switched to AP mode");
-				command("<W1");
-			}
-		}
-		else if (commandBuffer[2] == '1') // Mode=Soft AP
-		{
-			WiFi.disconnect();
-			WiFi.softAPdisconnect();
-			WiFi.mode(WIFI_AP);
-
-			AP_ssid.toCharArray(ssid, AP_ssid.length() + 1);
-			AP_password.toCharArray(password, AP_password.length() + 1);
-
-			DBG_OUTPUT_PORT.print("SSID: ");
-			DBG_OUTPUT_PORT.println(ssid);
-			DBG_OUTPUT_PORT.print("Password: ");
-			DBG_OUTPUT_PORT.println(password);
-			DBG_OUTPUT_PORT.print("IP: ");
-			DBG_OUTPUT_PORT.println(ip);
-			DBG_OUTPUT_PORT.print("Gateway: ");
-			DBG_OUTPUT_PORT.println(gateway);
-			DBG_OUTPUT_PORT.print("Subnet: ");
-			DBG_OUTPUT_PORT.println(subnet);
-
-			WiFi.softAPConfig(ip, gateway, subnet);
-			WiFi.softAP(ssid, password);
-			WiFi.mode(WIFI_AP);
-			WiFi.setOutputPower(10); // max: +20.5dBm min: 0dBm 
-			delay(100);
-			DBG_OUTPUT_PORT.println();
-			DBG_OUTPUT_PORT.print("Server IP address: ");
-			DBG_OUTPUT_PORT.println(WiFi.softAPIP());
-			DBG_OUTPUT_PORT.print("Server MAC address: ");
-			DBG_OUTPUT_PORT.println(WiFi.softAPmacAddress());
-			serverInit();
-		}
+		if (commandBuffer[2] == '0')  { wifiMode = 0; setWifi(); }
+		else if (commandBuffer[2] == '1') { wifiMode = 1; setWifi(); }
+    else if (commandBuffer[2] == '2') { wifiMode = 2; setWifi(); }
 
 		break;
+
+   case 'A':
+
+    isInitiated = true;
+    Serial.println(">XI");
+  
+   break;
 	}
+ 
 }

@@ -94,10 +94,18 @@ void nbFmMod()
 		is_modulation_paused = false;
 		SPI.beginTransaction(SPISettings(31e6, MSBFIRST, SPI_MODE1));
 		
+		uint16_t sampleArray[4096];
+		for (uint16_t i = 0; i < 4096; i++)
+		{
+			sampleArray[i] = (int)(i / (int)denum) + sum_external;
+		}
+
 		while (1) 
 		{
 			while ((ADC->ADC_ISR & 0x01) == 0x00); // Wait for conversion on A7 pin
-			setDAC((int)(ADC->ADC_CDR[0] / (int)denum) + sum_external, DAC0_LE);
+			uint16_t adc = ADC->ADC_CDR[0];
+
+			setDAC(sampleArray[adc], DAC0_LE);
 			
 			if (nextFreq) { sweepERASynth(); }
 			
@@ -109,6 +117,7 @@ void nbFmMod()
 				return;
 			}
 		}
+
 	}
 
 	if (modSource == Microphone) 
@@ -118,13 +127,20 @@ void nbFmMod()
 		is_modulation_paused = false;
 		SPI.beginTransaction(SPISettings(31e6, MSBFIRST, SPI_MODE1));
 		
+		uint16_t sampleArray[4096];
+
+		for (uint16_t i = 0; i < 4096; i++)
+		{
+			sampleArray[i] = (int)(i / (int)denum) + sum_external;
+		}
+
 		while (1) 
 		{
 			while ((ADC->ADC_ISR & 0x02) == 0x00); // Wait for conversion on A6 pin
-			setDAC((int)(ADC->ADC_CDR[1] / (int)denum) + sum_external, DAC0_LE);
+			uint16_t adc = ADC->ADC_CDR[1];
+			setDAC(sampleArray[adc], DAC0_LE);
 
 			if (nextFreq) { sweepERASynth(); }
-			
 			if (is_modulation_paused) 
 			{
 				SPI.endTransaction();
