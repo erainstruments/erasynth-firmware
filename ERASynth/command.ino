@@ -40,9 +40,9 @@ void command(String commandBuffer)
 			if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 		}
 
-		if (commandInString.length() > _freqSize) 
-		{ 
-			Serial.println("Limits exceeded"); 
+		if (commandInString.length() > _freqSize)
+		{
+			Serial.println("Limits exceeded");
 			return;
 		}
 
@@ -161,7 +161,7 @@ void command(String commandBuffer)
 		if (commandBuffer[2] == '1') { spiWrite_LMX(&LMX_RXX, LMX1_LE); }//LMX1
 		else if (commandBuffer[2] == '2') { spiWrite_LMX(&LMX_RXX, LMX2_LE); }//LMX2
 
-		Serial.print("LMX_RXX: "); 
+		Serial.print("LMX_RXX: ");
 		Serial.println(LMX_RXX, HEX);
 	}
 	else if (commandID == 'D')
@@ -210,9 +210,9 @@ void command(String commandBuffer)
 			if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 		}
 
-		if (commandInString.length() > _freqSize) 
-		{ 
-			Serial.println("Limits exceeded"); 
+		if (commandInString.length() > _freqSize)
+		{
+			Serial.println("Limits exceeded");
 			return;
 		}
 
@@ -363,7 +363,26 @@ void command(String commandBuffer)
 		else if (commandBuffer[2] == '1')
 		{
 			//Reference (0=Int; 1=Ext)
-			digitalWrite(SW1, commandBuffer[3] - 48);
+			if ((commandBuffer[3] - 48) == 0)
+			{
+				// Internal
+				digitalWrite(SW1, LOW);
+
+				digitalWrite(TCXO_En, !(referenceTcxoOrOcxo_Str.toInt()));
+				digitalWrite(OCXO_En, referenceTcxoOrOcxo_Str.toInt());
+			}
+			else
+			{
+				// External
+				digitalWrite(SW1, HIGH);
+
+				digitalWrite(TCXO_En, LOW);
+				digitalWrite(OCXO_En, LOW);
+			}
+
+
+
+
 
 			if (String(commandBuffer[3]) != referenceIntOrExt_Str)
 			{
@@ -608,6 +627,21 @@ void command(String commandBuffer)
 			setFreqParam(lastFrequency);
 			setAmplitude();
 		}
+		else if (commandBuffer[2] == 'S')
+		{
+			for (int i = 3; i <= commandBuffer.length() - 1; i++) { commandInString += (char)commandBuffer[i]; }
+
+			uint16_t phaseShift = commandInString.toInt();
+
+			if (phaseShift < 0) { phaseShift = 0; }
+			if (phaseShift > 360) { phaseShift = 360; }
+
+			Serial.print("Phase Shift : ");
+			Serial.print(phaseShift);
+			Serial.println(" Only works in Low Phase Noise Mode");
+
+			shiftPhase(phaseShift);
+		}
 	}
 	else if (commandID == 'M')
 	{
@@ -681,8 +715,8 @@ void command(String commandBuffer)
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _internalModulationFreq[1]) 
-			{ 
+			if (commandInString.length() > _internalModulationFreq[1])
+			{
 				Serial.println("Limits exceeded");
 				return;
 			}
@@ -703,10 +737,10 @@ void command(String commandBuffer)
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _fmDeviation[1]) 
-			{ 
-				Serial.println("Limits exceeded"); 
-				return; 
+			if (commandInString.length() > _fmDeviation[1])
+			{
+				Serial.println("Limits exceeded");
+				return;
 			}
 
 			if (commandInString != fmDeviation_Str)
@@ -725,8 +759,8 @@ void command(String commandBuffer)
 				if (isDigit(commandBuffer[i]) || commandBuffer[i] == '.') { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _amDepth[1]) 
-			{ 
+			if (commandInString.length() > _amDepth[1])
+			{
 				Serial.println("Limits exceeded");
 				return;
 			}
@@ -752,9 +786,9 @@ void command(String commandBuffer)
 				if (isDigit(commandBuffer[i])) { commandInString += (char)commandBuffer[i]; }
 			}
 
-			if (commandInString.length() > _pulsePeriod[1]) 
-			{ 
-				Serial.println("Limits exceeded"); 
+			if (commandInString.length() > _pulsePeriod[1])
+			{
+				Serial.println("Limits exceeded");
 				return;
 			}
 
@@ -777,7 +811,7 @@ void command(String commandBuffer)
 			}
 
 			if (commandInString.length() > _pulseWidth[1])
-			{ 
+			{
 				Serial.println("Limits exceeded");
 				return;
 			}
@@ -878,10 +912,9 @@ void command(String commandBuffer)
 	else if (commandID == 'R')
 	{
 		//READ BACK
-
 		if (commandBuffer[2] == 'A') //Read All
 		{
-			String vals[29][2];
+			String vals[30][2];
 
 			vals[0][0] = "rfoutput";
 			vals[0][1] = rfOnOff_Str;
@@ -970,7 +1003,10 @@ void command(String commandBuffer)
 			vals[28][0] = "phase_noise_mode";
 			vals[28][1] = phaseNoise_Str;
 
-			String read = getJSON(vals, 29);
+			vals[29][0] = "max_phase";
+			vals[29][1] = String(getMaxPhaseShift());
+
+			String read = getJSON(vals, 30);
 
 			Serial1.print(read);
 			Serial.println(read);
@@ -1037,7 +1073,7 @@ void command(String commandBuffer)
 		else if (commandBuffer[2] == 'C')
 		{
 			//Analog Readings current
-			ADC->ADC_CHER = 0x80;					// Enable ADC on pin A0
+			ADC->ADC_CHER = 0x80;         // Enable ADC on pin A0
 			while ((ADC->ADC_ISR & 0x80) == 0x00);  // Wait for conversion on A0 pin
 			cur = ADC->ADC_CDR[7];
 			Serial.println(String(((cur * 3.25) / 4096) / 1.5, 2));
@@ -1045,7 +1081,7 @@ void command(String commandBuffer)
 		else if (commandBuffer[2] == 'V')
 		{
 			//Analog Readings voltage
-			ADC->ADC_CHER = 0x40;					// Enable ADC on pin A1
+			ADC->ADC_CHER = 0x40;         // Enable ADC on pin A1
 			while ((ADC->ADC_ISR & 0x40) == 0x00);  // Wait for conversion on A1 pin
 			volt = ADC->ADC_CDR[6];
 			Serial.println(String((volt * 3.25) / 4096 * 5.02, 2));
@@ -1103,6 +1139,24 @@ void command(String commandBuffer)
 			//Read ESP8266 ON/OFF (0=OFF; 1=ON) 
 			Serial.println(esp8266OnOff_Str);
 		}
+		else if (commandBuffer[2] == 'P')
+		{
+			// Read Max Phase Shift
+			Serial.print("Maximum Phase Shift : ");
+			Serial.println(getMaxPhaseShift());
+		}
+		else if (commandBuffer[2] == 'Q')
+		{
+			if (commandBuffer[3] == 'F')
+			{
+				Serial.println(frequency_Str);
+			}
+			else if (commandBuffer[3] == 'A')
+			{
+				Serial.println(amplitude_Str);
+			}
+		}
+
 	}
 	else if (commandID == 'U')
 	{

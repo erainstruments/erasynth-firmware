@@ -1877,6 +1877,24 @@
         #home #rfFrequencySwitch div.button {
             width: 25%;
         }
+
+        #home .freq-step {
+            width: 14%;
+            float: left;
+            padding-left: 0px;
+            padding-right: 0px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #home .amp-step {
+            width: 14%;
+            float: left;
+            padding-left: 0px;
+            padding-right: 0px;
+            cursor: pointer;
+            text-align: center;
+        }
         /* end of design */
 
 
@@ -2093,6 +2111,7 @@
 
             var pulsePeriodUnit = 10e-4; // default is milisecond
             var pulseWidthUnit = 10e-4; //
+            var rf_multiplier = 1;
 
             $("#yearInfo").html(date.getFullYear());
 
@@ -2214,9 +2233,23 @@
 
                     if (current_freq > 0 && !isNaN(current_freq)) {
                         current_freq *= rf_multiplier;
-                        send("frequency", Math.round(current_freq));
+                        send("frequency", Math.round(current_freq), function () {
+                            $("#mainRead").click();
+                        });
                     }
                 }
+            });
+
+            $("#phaseShift").keypress(function (e) {
+
+                if (e.keyCode == 13)
+                {
+                    var amount = parseInt($("#phaseShift").val());
+                    if (amount < 0) { amount = 0; }
+                    if (amount > 360) { amount = 360; }
+                    send("phase_shift", amount);
+                }
+
             });
 
             $("#rfAmplitude").keypress(function (e) {
@@ -2224,7 +2257,9 @@
                     var current_amp = parseFloat($("#rfAmplitude").val());
                     if (!isNaN(current_amp)) {
                         $("#rfAmpSlider").val(current_amp);
-                        send("amplitude", current_amp);
+                        send("amplitude", current_amp, function () {
+                            $("#mainRead").click();
+                        });
                     }
                 }
             });
@@ -2233,6 +2268,114 @@
                 $("#rfAmplitude").val(parseFloat($("#rfAmpSlider").val()));
                 send("amplitude", parseInt($(this).val()));
             });
+
+            $("#freqStepInc").click(function () {
+
+                var freq = parseFloat($("#rfFrequency").val());
+                var step = parseFloat($("#rfFrequencyStep").val());
+                var stepUnit = $("#rfFrequencyStepUnit option:selected").text();
+                var multiplier = 1;
+                
+                if (isNaN(freq)) { freq = 0; }
+                if (isNaN(step)) { step = 0; }
+
+                switch (stepUnit)
+                {
+                    case "Hz": multiplier = 1; break;
+                    case "kHz": multiplier = 1000; break;
+                    case "MHz": multiplier = 1000000; break;
+                    case "GHz": multiplier = 1000000000; break;
+                }
+
+                freq *= rf_multiplier;
+                step *= multiplier;
+
+                freq += step;
+
+                freq /= rf_multiplier;
+
+                $("#rfFrequency").val(freq);
+
+                var e = jQuery.Event("keypress");
+                e.keyCode = 13;
+                $("#rfFrequency").trigger(e);
+            });
+
+            $("#freqStepDec").click(function () {
+
+                var freq = parseFloat($("#rfFrequency").val());
+                var step = parseFloat($("#rfFrequencyStep").val());
+                var stepUnit = $("#rfFrequencyStepUnit option:selected").text();
+                var multiplier = 1;
+
+                if (isNaN(freq)) { freq = 0; }
+                if (isNaN(step)) { step = 0; }
+
+                switch (stepUnit) {
+                    case "Hz": multiplier = 1; break;
+                    case "kHz": multiplier = 1000; break;
+                    case "MHz": multiplier = 1000000; break;
+                    case "GHz": multiplier = 1000000000; break;
+                }
+
+                freq *= rf_multiplier;
+                step *= multiplier;
+
+
+                freq -= step;
+
+                if (freq < 0) { freq = 0; }
+
+                freq /= rf_multiplier;
+
+                $("#rfFrequency").val(freq);
+
+                var e = jQuery.Event("keypress");
+                e.keyCode = 13;
+                $("#rfFrequency").trigger(e);
+            });
+
+            $("#ampStepInc").click(function () {
+
+                var amp = parseFloat($("#rfAmplitude").val());
+                var step = parseFloat($("#rfAmplitudeStep").val());
+                
+                if (isNaN(amp)) { amp = 0; }
+                if (isNaN(step)) { step = 0; }
+
+                amp += step;
+
+                $("#rfAmplitude").val(amp.toFixed(2));
+
+                var e = jQuery.Event("keypress");
+                e.keyCode = 13;
+                $("#rfAmplitude").trigger(e);
+            });
+
+            $("#ampStepDec").click(function () {
+
+                var amp = parseFloat($("#rfAmplitude").val());
+                var step = parseFloat($("#rfAmplitudeStep").val());
+
+                if (isNaN(amp)) { amp = 0; }
+                if (isNaN(step)) { step = 0; }
+
+                amp -= step;
+
+                $("#rfAmplitude").val(amp.toFixed(2));
+
+                var e = jQuery.Event("keypress");
+                e.keyCode = 13;
+                $("#rfAmplitude").trigger(e);
+            });
+
+            $("#settingsPhase").on("click", "div.button", function () {
+                var type = $(this).index(); //  0 = Low spur 1 = Low Phase
+                send("phase_noise_mode", type, function () {
+                    $("#mainRead").click();
+                });
+            });
+
             // end section
 
 
@@ -2244,9 +2387,7 @@
                 else { send("modulation_on_off", 0); }
 
             });
-
-
-
+                       
             $("#modSource").on("click", "div.button", function () {
                 var type = $(this).index(); //  0 = INTERNAL   1 = EXTERNAL   2 = MICROPHONE
 
@@ -2586,60 +2727,56 @@
 
                 var y = $("#settingsPhase").find("div.button.active").index();
 
-                send("phase_noise_mode", y, function () {
+                send("wifi_sta_ssid", $("#stationSSID").val(), function () {
 
-                    send("wifi_sta_ssid", $("#stationSSID").val(), function () {
+                    send("wifi_sta_password", $("#stationPass").val(), function () {
 
-                        send("wifi_sta_password", $("#stationPass").val(), function () {
+                        send("wifi_ap_password", $("#hotspotPass").val(), function () {
 
-                            send("wifi_ap_password", $("#hotspotPass").val(), function () {
+                            send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
+                                var ip1 = $("#ip1").val();
+                                ip1 = ip1.split(".");
 
-                                send("wifi_ap_ssid", $("#hotspotSSID").val(), function () {
-                                    var ip1 = $("#ip1").val();
-                                    ip1 = ip1.split(".");
+                                var str_1 = "";
+                                for (var i = 0; i < ip1.length; i++) {
+                                    if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
+                                    else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
+                                    else { str_1 += ip1[i] + "."; }
+                                }
+                                str_1 = str_1.substr(0, str_1.length - 1);
 
-                                    var str_1 = "";
-                                    for (var i = 0; i < ip1.length; i++) {
-                                        if (ip1[i].length == 1) { str_1 += "00" + ip1[i] + "."; }
-                                        else if (ip1[i].length == 2) { str_1 += "0" + ip1[i] + "."; }
-                                        else { str_1 += ip1[i] + "."; }
+                                send("wifi_ip_address", str_1, function () {
+                                    var ip2 = $("#ip2").val();
+                                    ip2 = ip2.split(".");
+
+                                    var str_2 = "";
+                                    for (var i = 0; i < ip2.length; i++) {
+                                        if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
+                                        else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
+                                        else { str_2 += ip2[i] + "."; }
                                     }
-                                    str_1 = str_1.substr(0, str_1.length - 1);
+                                    str_2 = str_2.substr(0, str_2.length - 1);
 
-                                    send("wifi_ip_address", str_1, function () {
-                                        var ip2 = $("#ip2").val();
-                                        ip2 = ip2.split(".");
+                                    send("wifi_subnet_address", str_2, function () {
+                                        var ip3 = $("#ip3").val();
+                                        ip3 = ip3.split(".");
 
-                                        var str_2 = "";
-                                        for (var i = 0; i < ip2.length; i++) {
-                                            if (ip2[i].length == 1) { str_2 += "00" + ip2[i] + "."; }
-                                            else if (ip2[i].length == 2) { str_2 += "0" + ip2[i] + "."; }
-                                            else { str_2 += ip2[i] + "."; }
+                                        var str_3 = "";
+                                        for (var i = 0; i < ip3.length; i++) {
+                                            if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
+                                            else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
+                                            else { str_3 += ip3[i] + "."; }
                                         }
-                                        str_2 = str_2.substr(0, str_2.length - 1);
+                                        str_3 = str_3.substr(0, str_3.length - 1);
 
-                                        send("wifi_subnet_address", str_2, function () {
-                                            var ip3 = $("#ip3").val();
-                                            ip3 = ip3.split(".");
+                                        send("wifi_gateway_address", str_3, function () {
 
-                                            var str_3 = "";
-                                            for (var i = 0; i < ip3.length; i++) {
-                                                if (ip3[i].length == 1) { str_3 += "00" + ip3[i] + "."; }
-                                                else if (ip3[i].length == 2) { str_3 += "0" + ip3[i] + "."; }
-                                                else { str_3 += ip3[i] + "."; }
-                                            }
-                                            str_3 = str_3.substr(0, str_3.length - 1);
+                                            var t = $("#settingsSw").find("div.button.active").index();
+                                            send("wifi_mode", t);
 
-                                            send("wifi_gateway_address", str_3, function () {
-
-                                                var t = $("#settingsSw").find("div.button.active").index();
-                                                send("wifi_mode", t);
-
-                                            });
                                         });
                                     });
                                 });
-
                             });
 
                         });
@@ -2647,6 +2784,7 @@
                     });
 
                 });
+                
             });
 
             $("#stationSSID").keypress(function (e) {
@@ -2738,12 +2876,21 @@
                     }
 
 
-                    $("#rfFrequencySwitch div.button").removeClass("active");
-                    $("#rfFrequencySwitch div.button:eq(0)").addClass("active");
-                    rf_multiplier = 1;
-                    $("#rfFrequency").val(parseInt(response.frequency));
+                    //$("#rfFrequencySwitch div.button").removeClass("active");
+                    //$("#rfFrequencySwitch div.button:eq(0)").addClass("active");
+
+                    //rf_multiplier = 1;
+
+                    $("#rfFrequency").val(parseInt(response.frequency) / rf_multiplier);
                     $("#rfAmplitude").val(parseFloat(response.amplitude));
-                    $("#rfAmpSlider").val(parseInt(response.amplitude));
+
+
+                    //$("#rfAmpSlider").val(parseInt(response.amplitude));
+
+                    $("#settingsPhase div.button").removeClass("active").eq(response.phase_noise_mode).addClass("active");
+
+                    $("#phaseShiftAmount").text(response.max_phase);
+                    
                     //
                     // end of section
                     //
@@ -2890,7 +3037,6 @@
                     $("#ip3").val(response.wifi_gateway_address);
 
                     $("#settingsSw div.button").removeClass("active").eq(response.wifi_mode).addClass("active");
-                    $("#settingsPhase div.button").removeClass("active").eq(response.phase_noise_mode).addClass("active");
                     $("#settings #network").hide();
                     $("#settings #hotspot").hide();
 
@@ -2903,6 +3049,9 @@
                     //
                     // end of section
                     //
+
+
+                    $("#diagRead").click();
                 });
             });
 
@@ -2912,7 +3061,7 @@
                     $("#rfFrequency").val(0);
                     $("#rfAmplitude").val(0);
                     $("#rfAmpSlider").val(0);
-                    $("#rfFrequencySwitch div.button").removeClass("active").eq(0).addClass("active");
+                    //$("#rfFrequencySwitch div.button").removeClass("active").eq(0).addClass("active");
 
                     $("#modSw div.button").removeClass("active").eq(1).addClass("active");
                     $("#modSource div.button").removeClass("active").eq(0).addClass("active");
@@ -2941,6 +3090,13 @@
             });
 
         });
+
+
+        window.onload = function ()
+        {
+            setTimeout(function () { $("#mainRead").click(); }, 250);
+        }
+
     </script>
 
 </head>
@@ -2997,14 +3153,60 @@
                                 <div class="button">GHz</div>
                             </div>
 
-                            <p style="font-weight:bold;color:white;">Frequency</p>
-                            <p><input type="text" class="input" autocomplete="off" placeholder="Frequency" id="rfFrequency" /></p>
+                            <p style="font-weight:bold;color:white; margin-top:25px;">Frequency</p>
+
+                            <div class="clearfix">
+
+                                <input type="text" class="input" autocomplete="off" style="width:65%; float:left;" placeholder="Frequency" id="rfFrequency" />
+
+                                <div class="input freq-step" id="freqStepInc" style="margin:0px 5px;">+</div>
+                                <div class="input freq-step" id="freqStepDec">-</div>
+
+                            </div>
+
+                            <p class="clearfix" style="font-weight:bold;color:white; margin-top:0px;">Frequency Step</p>
+                            <div class="clearfix">
+                                <input type="text" style="float:left; width:65%;" class="input" autocomplete="off" placeholder="Frequency Step" id="rfFrequencyStep" />
+                                <select class="input" style="float:left; margin-left:15px; width:23%;" id="rfFrequencyStepUnit">
+                                    <option>Hz</option>
+                                    <option>kHz</option>
+                                    <option>MHz</option>
+                                    <option>GHz</option>
+                                </select>
+                            </div>
 
                             <p style="font-weight:bold;color:white;">Amplitude (dBm)</p>
-                            <p><input type="text" class="input" autocomplete="off" placeholder="Amplitude" id="rfAmplitude" /></p>
 
-                            <p><input type="range" class="range" id="rfAmpSlider" min="-60" max="20" step="1" /></p>
+                            <div class="clearfix">
 
+                                <input type="text" class="input" autocomplete="off" style="width:65%; float:left;" placeholder="Amplitude" id="rfAmplitude" />
+
+                                <div class="input amp-step" id="ampStepInc" style="margin:0px 5px;">+</div>
+                                <div class="input amp-step" id="ampStepDec">-</div>
+
+                            </div>
+
+                            <p class="clearfix" style="font-weight:bold;color:white; margin-top:0px;">Amplitude Step</p>
+                            <div class="clearfix">
+                                <input type="text" style="float:left; width:65%;" class="input" autocomplete="off" placeholder="Amplitude Step" id="rfAmplitudeStep" />
+                            </div>
+
+                            <div class="switch" id="settingsPhase">
+                                <div class="button active">Low Spurious Mode</div>
+                                <div class="button">Low Phase Noise</div>
+                            </div>
+
+
+                            <p>&nbsp;</p>
+                            <div class="phase-shift-section">
+                                <p class="clearfix" style="font-weight:bold; font-size: x-large; color:white; margin-top:0px; margin-bottom:0px;">Phase Shift</p>
+                                <p style="color:white; margin-top:0px;">Phase shift is only available in Low Phase Noise mode.</p>
+                                <p style="color:white; margin-top:0px;">Maximum available phase shift (@ this frequency) is <span id="phaseShiftAmount">...</span> degree</p>
+                                <p>
+                                    <input class="input" type="text" placeholder="Shift amount" id="phaseShift" />
+                                </p>
+                            </div>
+                            
                         </div>
 
                     </div>
@@ -3252,13 +3454,6 @@
 
                             <p>&nbsp;</p>
 
-                            <div class="switch" id="settingsPhase">
-                                <div class="button active">Low Spurious Mode</div>
-                                <div class="button">Low Phase Noise</div>
-                            </div>
-
-                            <p>&nbsp;</p>
-
                             <p><div class="btn" id="setSave">SAVE</div></p>
 
                         </div>
@@ -3275,7 +3470,7 @@
 
     <footer class="footer">
         <div>
-            <span id="yearInfo"></span> &copy; <a href="http://erainstruments.com" target="_blank" style="color:white; text-decoration:none;">ERA INSTRUMENTS</a> <span style="margin-left:10px;">v1.1.5</span>
+            <span id="yearInfo"></span> &copy; <a href="http://erainstruments.com" target="_blank" style="color:white; text-decoration:none;">ERA INSTRUMENTS</a> <span style="margin-left:10px;">v1.1.6</span>
         </div>
     </footer>
 

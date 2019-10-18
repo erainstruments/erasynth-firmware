@@ -81,96 +81,121 @@ void setFreqParam(uint64_t freq)
 	}
 
 	if (isLowPhaseNoiseActive)
-	{
-		// Bypass LMX1 with switch
-		//digitalWrite(SW2, LOW);
-		// Send LMX1 Mute 
-		//spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
+  {
+    // Bypass LMX1 with switch
+    //digitalWrite(SW2, LOW);
+    // Send LMX1 Mute 
+    //spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
+    
+    uint64_t PLL_NUM = 0;
+    uint64_t PLL_DENUM = 200e6;
+    uint64_t PLL_INT = 0;
+    uint64_t VCO_FREQ = 0;
 
-		LMX2_R44_update |= 0x0000A3;
-		uint32_t R75 = 0x4B0800 | (CHDIV << 6);
+    VCO_FREQ =  (uint64_t)(freq > 15e9 ? 1 : ODIV) * freq;
+    if(freq > 15e9){ VCO_FREQ /= 2; }
+    
+    PLL_INT = VCO_FREQ / PLL_DENUM;
+    PLL_NUM = VCO_FREQ % 200000000;
 
-		// REF Freq
-		uint32_t f_pd = 200e6;
+	if (ODIV < 1) { ODIV = 1; }
+						
+    frequencyValues[0] = (uint32_t)PLL_NUM;
+    frequencyValues[1] = (uint32_t)PLL_DENUM;
+    frequencyValues[2] = (uint32_t)PLL_INT;
+    frequencyValues[3] = (uint32_t)CHDIV;
+    frequencyValues[4] = (uint32_t)ODIV;
+    frequencyValues[5] = (uint32_t)(VCO_FREQ >> 32);
+    frequencyValues[6] = (uint32_t)(VCO_FREQ);
 
-		uint32_t R39 = 0x270000 | (uint16_t)(f_pd);
-		uint32_t R38 = 0x260000 | (f_pd >> 16);
+    // PLL Fractional Part, Denumerator Registers
+    uint32_t R39 = 0x270000 | (uint16_t)(PLL_DENUM);
+    uint32_t R38 = 0x260000 | (PLL_DENUM >> 16);
 
-		uint64_t freq_vco = (uint64_t)ODIV * freq;
+    // MASH RESET and MASH ORDER
+    LMX2_R44_update |= 0x0000A2;
+    
+    // Channel Divider Register
+    uint32_t R75 = 0x4B0800 | (CHDIV << 6);
 
-		uint64_t Nlmx_int = freq_vco / 200000000;
-		uint32_t R36 = (uint32_t)Nlmx_int + 2359296;
-		uint64_t pll_num = freq_vco % 200000000;
+    // PLL Integer Part
+    uint32_t R36 = (uint32_t)PLL_INT + 2359296;
+    
+    // PLL Fractional Part, Numarator Registers
+    uint32_t R42 = 0x2A0000 | (PLL_NUM >> 16);
+    uint32_t R43 = 0x2B0000 | (PLL_NUM & (0x00FFFF));
+						  
+    // Charge Pump Current Register
+    uint32_t R14 = 0x0E1E70;
+		
+    if (!is_modulation_stopped && modType == WBFM_Mod)
+    {
+      WBFM_N_LMX2 = PLL_INT * 2000;
+      if (WBFM_N_LMX2 >= 65536)
+      {
+        WBFM_LMX2_R34_update = 2228225;
+        WBFM_LMX2_R36_update = WBFM_N_LMX2 + 2293760;
+      }
+      else
+      {
+        WBFM_LMX2_R34_update = 2228224;
+        WBFM_LMX2_R36_update = WBFM_N_LMX2 + 2359296;
+      }
+    }
 
-		uint32_t R42 = 0x2A0000 | (pll_num >> 16);
-		uint32_t R43 = 0x2B0000 | (pll_num & (0x00FFFF));
-		uint32_t R14 = 0x0E1E70;
+    if (!is_modulation_stopped && modType == WBFM_Mod && !is_sweep_stopped)
+    {
+      digitalWrite(WB_FM_En, LOW); //WB_FM Disabled. Normal Operation
+						  
+      spiWrite_LMX(&LMX2_register[100], LMX2_LE); // PLL_R_PRE    R12 0x0C 
+      spiWrite_LMX(&LMX2_register[101], LMX2_LE); // PLL_R      R11 0x0B
+      spiWrite_LMX(&LMX2_register[78], LMX2_LE);  // PLL_NUM[18:16] R34 0x22
+      spiWrite_LMX(&R14, LMX2_LE);  // CPG        R14 0x0E
+      //spiWrite_LMX(&LMX2_register[98], LMX2_LE);  // CPG        R14 0x0E
+												 
+    }
 
-		if (!is_modulation_stopped && modType == WBFM_Mod)
-		{
-			WBFM_N_LMX2 = Nlmx_int * 2000;
-			if (WBFM_N_LMX2 >= 65536)
-			{
-				WBFM_LMX2_R34_update = 2228225;
-				WBFM_LMX2_R36_update = WBFM_N_LMX2 + 2293760;
-			}
-			else
-			{
-				WBFM_LMX2_R34_update = 2228224;
-				WBFM_LMX2_R36_update = WBFM_N_LMX2 + 2359296;
-			}
-		}
+    if (!is_modulation_stopped && modType == WBFM_Mod && !is_sweep_stopped)
+    {
+      // It is required when changing the frequency while modulation is ON.
+      delayMicroseconds(500);
+      spiWrite_LMX(&WBFM_LMX2_R12, LMX2_LE);
+      spiWrite_LMX(&WBFM_LMX2_R11, LMX2_LE);
+      spiWrite_LMX(&WBFM_LMX2_R34_update, LMX2_LE);
+      spiWrite_LMX(&WBFM_LMX2_R36_update, LMX2_LE);
+      spiWrite_LMX(&WBFM_LMX2_R14, LMX2_LE);
+      digitalWrite(WB_FM_En, HIGH); //WB_FM Enabled.
+    }
 
-		if (!is_modulation_stopped && modType == WBFM_Mod && !is_sweep_stopped)
-		{
-			digitalWrite(WB_FM_En, LOW); //WB_FM Disabled. Normal Operation
-			spiWrite_LMX(&LMX2_register[100], LMX2_LE); // PLL_R_PRE	  R12 0x0C 
-			spiWrite_LMX(&LMX2_register[101], LMX2_LE); // PLL_R		  R11 0x0B
-			spiWrite_LMX(&LMX2_register[78], LMX2_LE);  // PLL_NUM[18:16] R34 0x22
-			spiWrite_LMX(&R14, LMX2_LE);  // CPG			  R14 0x0E
-			//spiWrite_LMX(&LMX2_register[98], LMX2_LE);  // CPG			  R14 0x0E
-		}
+    // MASH SEED PFD_DLY_SEL Register
+    LMX2_R37_update = (VCO_FREQ > 12500e6 ? 0x258104 : 0x258204);
+  
+    spiWrite_LMX(&R14, LMX2_LE);
+    spiWrite_LMX(&LMX2_R37_update, LMX2_LE);
+    spiWrite_LMX(&LMX2_R44_update, LMX2_LE);
+    
+    spiWrite_LMX(&R75, LMX2_LE);
+    spiWrite_LMX(&R39, LMX2_LE);
+    spiWrite_LMX(&R38, LMX2_LE);
+    spiWrite_LMX(&R43, LMX2_LE);
+    spiWrite_LMX(&R42, LMX2_LE);
+    spiWrite_LMX(&LMX2_R45_update, LMX2_LE);
+    spiWrite_LMX(&LMX2_R27_update, LMX2_LE);    
+    spiWrite_LMX(&R36, LMX2_LE);
+    spiWrite_LMX(&LMX2_R0, LMX2_LE);
 
-		if (!is_modulation_stopped && modType == WBFM_Mod && !is_sweep_stopped)
-		{
-			// It is required when changing the frequency while modulation is ON.
-			delayMicroseconds(500);
-			spiWrite_LMX(&WBFM_LMX2_R12, LMX2_LE);
-			spiWrite_LMX(&WBFM_LMX2_R11, LMX2_LE);
-			spiWrite_LMX(&WBFM_LMX2_R34_update, LMX2_LE);
-			spiWrite_LMX(&WBFM_LMX2_R36_update, LMX2_LE);
-			spiWrite_LMX(&WBFM_LMX2_R14, LMX2_LE);
-			digitalWrite(WB_FM_En, HIGH); //WB_FM Enabled.
-		}
-
-		if (freq_vco > 12500e6) { LMX2_R37_update = LMX2_R37_update_1; }
-		else { LMX2_R37_update = LMX2_R37_update_2; }
-
-		spiWrite_LMX(&R14, LMX2_LE);
-		spiWrite_LMX(&LMX2_R37_update, LMX2_LE);
-		spiWrite_LMX(&LMX2_R44_update, LMX2_LE);
-		spiWrite_LMX(&R75, LMX2_LE);
-		spiWrite_LMX(&R39, LMX2_LE);
-		spiWrite_LMX(&R38, LMX2_LE);
-		spiWrite_LMX(&R43, LMX2_LE);
-		spiWrite_LMX(&R42, LMX2_LE);
-		spiWrite_LMX(&LMX2_R45_update, LMX2_LE);
-		spiWrite_LMX(&LMX2_R27_update, LMX2_LE);
-		spiWrite_LMX(&R36, LMX2_LE);
-		spiWrite_LMX(&LMX2_R0, LMX2_LE);
-
-		if (is_sweep_stopped)
-		{
-			// if ERASynth is not in sweep mode
-			delayMicroseconds(500);
-			spiWrite_LMX(&LMX2_R0, LMX2_LE);
-		}
-		else
-		{
+    if (is_sweep_stopped)
+    {
+      // if ERASynth is not in sweep mode
+      delayMicroseconds(500);
+      spiWrite_LMX(&LMX2_R0, LMX2_LE);
+    }
+    else
+    {
       // When LMX works in fractional mode, vco calibration takes longer and we need to wait it to settle 
-			delayMicroseconds(100);
-		}
-	}
+      delayMicroseconds(100);
+    }
+  }
 	else
 	{
 		// Activate LMX1 Path with switch

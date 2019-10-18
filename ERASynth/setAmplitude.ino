@@ -127,16 +127,21 @@ void setAmplitude()
 	{
 		if (amplitude >= -20) 
 		{
-			DACValue_low = pgm_read_word(&Calibration_LUT_1[index_freq][index_amp_high]);
-			DACValue_high = pgm_read_word(&Calibration_LUT_1[index_freq][index_amp_low]);
+			#if DEBUG == 0
+				DACValue_low = pgm_read_word(&Calibration_LUT_1[index_freq][index_amp_high]);
+				DACValue_high = pgm_read_word(&Calibration_LUT_1[index_freq][index_amp_low]);
+			#endif
 		}
 		else
 		{
 			LMX2_R44_update &= 0xFF00FF; //Below -20dBm calibration is done with the mininum LMX2 output power
 			index_amp_low = index_amp_low - 40;
 			index_amp_high = index_amp_high - 40;
-			DACValue_low = pgm_read_word(&Calibration_LUT_2[index_freq][index_amp_high]);
-			DACValue_high = pgm_read_word(&Calibration_LUT_2[index_freq][index_amp_low]);
+			
+			#if DEBUG == 0
+				DACValue_low = pgm_read_word(&Calibration_LUT_2[index_freq][index_amp_high]);
+				DACValue_high = pgm_read_word(&Calibration_LUT_2[index_freq][index_amp_low]);
+			#endif
 		}
 	}
 
@@ -145,16 +150,21 @@ void setAmplitude()
 	{
 		if (amplitude >= -20) 
 		{
-			DACValue_low = pgm_read_word(&Calibration_LUT_3[index_freq][index_amp_high]);
-			DACValue_high = pgm_read_word(&Calibration_LUT_3[index_freq][index_amp_low]);
+			#if DEBUG == 0
+				DACValue_low = pgm_read_word(&Calibration_LUT_3[index_freq][index_amp_high]);
+				DACValue_high = pgm_read_word(&Calibration_LUT_3[index_freq][index_amp_low]);
+			#endif
 		}
 		else 
 		{
 			LMX2_R44_update &= 0xFF00FF; //Below -20dBm calibration is done with the mininum LMX2 output power
 			index_amp_low = index_amp_low - 40;
 			index_amp_high = index_amp_high - 40;
-			DACValue_low = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_high]);
-			DACValue_high = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_low]);
+			
+			#if DEBUG == 0
+				DACValue_low = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_high]);
+				DACValue_high = pgm_read_word(&Calibration_LUT_4[index_freq][index_amp_low]);
+			#endif
 		}
 	}
 	#endif

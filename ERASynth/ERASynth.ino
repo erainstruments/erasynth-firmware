@@ -129,7 +129,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.13";
+String embeddedVersion_Str = "v1.0.16";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";
@@ -169,6 +169,16 @@ String ERASynthModel_Str = ""; // 0:ERASynth, 1:ERASynth+, 2:ERASynth++
 String serialNumber_Str = "";
 String DDSPowerLevel_Str = "";
 String phaseNoise_Str = "";
+
+uint32_t frequencyValues[7];
+
+// [0] PLL_NUM
+// [1] PLL_DENUM
+// [2] PLL_INT
+// [3] CHDIV
+// [4] ODIV
+// [5] VCO FREQ (HIGH)
+// [6] VCO FREQ (LOW)					
 
 void setup()
 {

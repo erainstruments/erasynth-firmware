@@ -16,9 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Make DEBUG = 1 to write faster when debugging. This will avoid amplitude calibration files to written in flash
+
+#define ERASynth 2
+// Make DEBUG = 1 to write faster when debugging. This will avoid amplitude calibration files to written in flash therefore ouput power is going to be maximum.
 #define DEBUG 0
-#define ERASynth 0
 #define max_DAC_Value 4095
 #define min_DAC_Value 0
 #define LMX1_LE 10

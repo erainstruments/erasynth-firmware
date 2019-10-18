@@ -44,7 +44,7 @@ String STA_password = "erainstruments";
 char ssid[100] = "";
 char password[100] = "";
 
-String ESP8266FirmwareVersion_Str = "v1.0.5";
+String ESP8266FirmwareVersion_Str = "v1.0.6";
 
 ESP8266WebServer server(80);
 

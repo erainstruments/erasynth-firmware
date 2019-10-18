@@ -35,6 +35,11 @@ void handleCommand()
 		debugPrintln(">F" + server.arg("frequency"));
 		server.send(200, "text/plain", "");
 	}
+  else if (server.arg("phase_shift") != "") 
+  {
+    debugPrintln(">PS" + server.arg("phase_shift"));
+    server.send(200, "text/plain", "");
+  }
 	else if (server.arg("rfoutput") != "") 
 	{
 		debugPrintln(">P0" + server.arg("rfoutput"));

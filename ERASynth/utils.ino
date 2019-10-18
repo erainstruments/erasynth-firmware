@@ -357,3 +357,35 @@ void checkVersion()
 		facReset(); 
 	}
 }
+
+void shiftPhase(uint16_t phaseShift) 
+{
+  if (isLowPhaseNoiseActive)
+  {
+    uint64_t MASH_SEED = 0;
+
+    MASH_SEED = ((uint64_t)phaseShift * frequencyValues[1] * (uint64_t)frequencyValues[4]) / (360);
+
+    uint32_t R40 = 0x280000 | (uint16_t)(MASH_SEED >> 16);
+    uint32_t R41 = 0x290000 | (uint16_t)(MASH_SEED);
+
+    spiWrite_LMX(&R40, LMX2_LE);
+    spiWrite_LMX(&R41, LMX2_LE);
+  }
+}
+
+uint16_t getMaxPhaseShift()
+{
+  float ODIV = (float)frequencyValues[4];
+  float PLL_NUM = (float)frequencyValues[0];
+  float PLL_DENUM = (float)frequencyValues[1];
+  
+  float f = 360.0 * (1.0 - (PLL_NUM / PLL_DENUM)) / ODIV * 10;
+  uint16_t degree = (uint16_t)f;
+
+  if (degree % 10 == 0) { degree /= 10; degree--; }
+  else { degree /= 10; }
+
+  return degree;
+
+}
