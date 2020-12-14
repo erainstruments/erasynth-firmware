@@ -265,13 +265,22 @@ void stopAllMod()
 void sweepERASynth()
 {
 	nextFreq = false;
-	lastFrequency = startFrequency + stepFrequency * sweepIndex++;
+	lastFrequency = startFrequency + (stepFrequency * sweepIndex);
 	setMinAmplitude();
 	setFreqBand(lastFrequency);
 	setFreqParam(lastFrequency);
 	setAmplitude();
 
-	if (sweepIndex == number_of_sweep_points) { sweepIndex = 0; }
+  if (startFrequency > stopFrequency)
+  {
+    sweepIndex--;
+    if (abs(sweepIndex) > number_of_sweep_points || (stepFrequency > abs(startFrequency - stopFrequency))) { sweepIndex = 0; }
+  }
+  else
+  {
+    sweepIndex++;
+    if (sweepIndex > number_of_sweep_points || (stepFrequency > abs(startFrequency - stopFrequency))) { sweepIndex = 0; }
+  }
 }
 
 void setFRAM(uint16_t vars[], String str)

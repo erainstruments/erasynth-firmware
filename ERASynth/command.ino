@@ -321,7 +321,14 @@ void command(String commandBuffer)
 
 			if (isDebugEnabled) { Serial.println("Frequency Sweep: Started"); }
 
-			number_of_sweep_points = ((stopFrequency - startFrequency) / stepFrequency) + 1;
+      if (stopFrequency < startFrequency)
+      {
+        number_of_sweep_points = (startFrequency - stopFrequency) / stepFrequency;
+      }
+      else
+      {
+        number_of_sweep_points = (stopFrequency - startFrequency) / stepFrequency;
+      }
 
 			if (stopFrequency > 30e6 || startFrequency > 30e6)
 			{
@@ -909,6 +916,29 @@ void command(String commandBuffer)
 			}
 		}
 	}
+ else if(commandID == 'K')
+ {
+    //Write serial number
+    commandInString = "";
+    for(int i = 2; i < commandBuffer.length() -1; i++)
+    {
+      if(isDigit(commandBuffer[i])){ commandInString += (char)commandBuffer[i]; }
+    }
+
+    serialNumber = commandInString.toInt();
+    if(serialNumber > 9999){ serialNumber = 9999; }
+
+    if(String(serialNumber) != serialNumber_Str)
+    {
+      serialNumber_Str = String(serialNumber);
+      setFRAM(_serialNumber, serialNumber_Str);
+    }
+
+    Serial.print("Serial Number : ");
+    Serial.println(serialNumber_Str);
+    
+    
+  }
 	else if (commandID == 'R')
 	{
 		//READ BACK

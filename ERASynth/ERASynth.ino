@@ -84,7 +84,7 @@ uint32_t dwellTime = 100;  //ms
 uint32_t pulsePeriod = 2000; //ms
 uint32_t pulseWidth = 1000; //ms
 
-uint64_t sweepIndex = 0;
+int64_t sweepIndex = 0;
 uint64_t BandPoint = 4500e6;
 uint64_t lastFrequency = 3225123456;
 uint64_t frequency = 3225123456;
@@ -129,7 +129,7 @@ boolean isPulseRising = false;
 boolean is_pulse_changed = false;
 
 String ESP8266FirmwareVersion_Str = "";
-String embeddedVersion_Str = "v1.0.16";
+String embeddedVersion_Str = "v1.0.17";
 String cmdString = "";
 String cmd1String = "";
 String frequency_Str = "";
