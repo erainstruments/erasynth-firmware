@@ -502,6 +502,13 @@ void command(String commandBuffer)
 				{
 					esp8266OnOff_Str = String(commandBuffer[4]);
 					setFRAM(_esp8266OnOff, esp8266OnOff_Str);
+  
+          if(esp8266OnOff_Str == "1")
+          { 
+            delay(250);
+            Serial1.println("<A");
+            delay(250);
+          }       
 				}
 				if (isDebugEnabled) { Serial.print("ESP8266 Off[0]/On[1]: "); Serial.println(esp8266OnOff_Str); }
 			}
@@ -1006,6 +1013,8 @@ void command(String commandBuffer)
 
 			vals[27][0] = "wifi_subnet_address";
 			vals[27][1] = subnetAddress_Str;
+
+      phaseNoise_Str = isLowPhaseNoiseActive ? "1" : "0";
 
 			vals[28][0] = "phase_noise_mode";
 			vals[28][1] = phaseNoise_Str;

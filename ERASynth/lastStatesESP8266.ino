@@ -20,7 +20,7 @@ void setLastStatesOfESP8266()
 {
 	esp8266OnOff_Str		= getFRAM(_esp8266OnOff);
 	
-	if (esp8266OnOff_Str == "0") { return; }
+	if (esp8266OnOff_Str == "0") { digitalWrite(Wi_Fi_PD, 0); return; }
 	
 	staModeSSID_Str			= getFRAM(_staModeSSID);
 	staModePassword_Str		= getFRAM(_staModePassword);

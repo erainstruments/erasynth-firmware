@@ -64,6 +64,7 @@ void setFreqParam(uint64_t freq)
 	else if (freq >= 0.25e6 && freq <= 30e6)
 	{
 		isLowPhaseNoiseActive = false;
+    REG_PIOC_ODSR |= (1 << 9);
 		spiWrite_LMX(&LMX1_R75_DDS, LMX1_LE);
 		spiWrite_LMX(&LMX1_R36_DDS, LMX1_LE);
 		spiWrite_LMX(&LMX1_R43_DDS, LMX1_LE);
@@ -86,6 +87,7 @@ void setFreqParam(uint64_t freq)
     //digitalWrite(SW2, LOW);
     // Send LMX1 Mute 
     //spiWrite_LMX(&LMX1_R0_mute, LMX1_LE);
+    REG_PIOC_ODSR &= ~(1 << 9);
     
     uint64_t PLL_NUM = 0;
     uint64_t PLL_DENUM = 200e6;
@@ -200,7 +202,8 @@ void setFreqParam(uint64_t freq)
 	{
 		// Activate LMX1 Path with switch
 		//digitalWrite(SW2, HIGH);
-
+    REG_PIOC_ODSR |= (1 << 9);
+    
 		LMX2_R44_update |= 0x000080;
 
 		LMX2_R75_update = 64 * CHDIV + 4917248;
